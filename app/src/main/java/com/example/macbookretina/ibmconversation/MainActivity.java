@@ -11,8 +11,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
+
 
 import java.io.IOException;
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1;
@@ -35,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, requestCode);
         }
 
-
-        outputFile = Environment.getExternalStorageDirectory() + "/temp.3gpp";
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.mp3";
 
         recorder = new AudioRecordTest(outputFile);
 
