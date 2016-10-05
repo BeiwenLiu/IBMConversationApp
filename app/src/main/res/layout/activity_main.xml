@@ -36,4 +36,15 @@
         android:layout_below="@+id/button_2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="33dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call SpeechToText"
+        android:id="@+id/button_4"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/button_2"
+        android:layout_alignEnd="@+id/button_2" />
 </RelativeLayout>

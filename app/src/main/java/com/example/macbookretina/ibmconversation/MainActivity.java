@@ -18,13 +18,15 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.WebSocketManager;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 
 
 import java.io.IOException;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1;
+    Button play1,stop1,record1,speech1;
     private AudioRecordTest recorder;
     private String outputFile = null;
     private boolean permissionToRecordAccepted = false;
@@ -49,13 +51,42 @@ public class MainActivity extends AppCompatActivity {
 
         recorder = new AudioRecordTest(outputFile);
 
+        speechService = initSpeechToTextService();
+
         record1 = (Button) findViewById(R.id.button_1);
         stop1 = (Button) findViewById(R.id.button_2);
         play1 = (Button) findViewById(R.id.button_3);
+        speech1 = (Button) findViewById(R.id.button_4);
 
         stop1.setEnabled(false);
 
         play1.setEnabled(false);
+
+        speech1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+
+                    WebSocketManager a = new WebSocketManager("wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize");
+                    a.recognize(new MicrophoneInputStream(),getRecognizeOptions(), new BaseRecognizeCallback());
+
+                    //speechService.recognizeUsingWebSockets(new MicrophoneInputStream(),
+                            //getRecognizeOptions(), new MicrophoneRecognizeDelegate());
+                } catch (IllegalStateException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                play1.setEnabled(false);
+                record1.setEnabled(false);
+                stop1.setEnabled(true);
+
+                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+            }
+        });
 
         record1.setOnClickListener(new View.OnClickListener() {
             @Override
