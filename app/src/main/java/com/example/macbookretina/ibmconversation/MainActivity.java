@@ -11,9 +11,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
+import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 
 
 import java.io.IOException;
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToWriteAccepted = false;
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
+    private SpeechToText speechService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +141,25 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionToRecordAccepted ) MainActivity.super.finish();
         if (!permissionToWriteAccepted ) MainActivity.super.finish();
 
+    }
+
+    private SpeechToText initSpeechToTextService() {
+        SpeechToText service = new SpeechToText();
+        String username = "e8ed3836-7273-493c-b5e0-f7e1283f61d6";
+        String password = "Nsg0gxPZ0k4m";
+        service.setUsernameAndPassword(username, password);
+        service.setEndPoint("https://stream.watsonplatform.net/speech-to-text/api");
+        return service;
+    }
+
+    private RecognizeOptions getRecognizeOptions() {
+        Builder a = new Builder(); //Instantiating RecognizeOptions is deprecated
+        a.continuous(true);
+        a.contentType(MicrophoneInputStream.CONTENT_TYPE);
+        a.model("en-US_BroadbandModel");
+        a.interimResults(true);
+        a.inactivityTimeout(2000);
+        return a.build();
     }
 
 
