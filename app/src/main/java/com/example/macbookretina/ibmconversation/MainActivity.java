@@ -11,6 +11,20 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.speech.RecognizerIntent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.os.AsyncTask;
+
+
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
@@ -18,21 +32,35 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.WebSocketManager;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Locale;
+import java.util.ArrayList;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.DataOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1,speech1;
+    TextView speech_output;
     private AudioRecordTest recorder;
     private String outputFile = null;
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToWriteAccepted = false;
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private SpeechToText speechService;
+    public final int SPEECH_REQUEST_CODE = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, requestCode);
         }
 
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.mp3";
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.wav";
 
         recorder = new AudioRecordTest(outputFile);
 
@@ -57,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         stop1 = (Button) findViewById(R.id.button_2);
         play1 = (Button) findViewById(R.id.button_3);
         speech1 = (Button) findViewById(R.id.button_4);
+        speech_output = (TextView) findViewById(R.id.textView);
 
         stop1.setEnabled(false);
 
@@ -65,26 +94,31 @@ public class MainActivity extends AppCompatActivity {
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try  {
+                            try {
+                                sendRequest();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
-                    WebSocketManager a = new WebSocketManager("wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize");
-                    a.recognize(new MicrophoneInputStream(),getRecognizeOptions(), new BaseRecognizeCallback());
+                thread.start();
 
-                    //speechService.recognizeUsingWebSockets(new MicrophoneInputStream(),
-                            //getRecognizeOptions(), new MicrophoneRecognizeDelegate());
-                } catch (IllegalStateException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
 
                 play1.setEnabled(false);
-                record1.setEnabled(false);
+                record1.setEnabled(true);
                 stop1.setEnabled(true);
 
-                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Conversation started", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -93,11 +127,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     recorder.start();
-                } catch (IllegalStateException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -191,6 +221,113 @@ public class MainActivity extends AppCompatActivity {
         a.interimResults(true);
         a.inactivityTimeout(2000);
         return a.build();
+    }
+
+    public void showGoogleInputDialog() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "Your device is not supported!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case SPEECH_REQUEST_CODE: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    speech_output.setText(result.get(0));
+                }
+                break;
+            }
+
+        }
+    }
+
+    private void test() throws FileNotFoundException {
+
+//        InputStream audio = new FileInputStream(outputFile);
+//
+//        SpeechToText service = new SpeechToText();
+//        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
+//        Builder a = new Builder();
+//        a.continuous(true).interimResults(true).contentType(HttpMediaType.AUDIO_WAV);
+//
+//        service.recognizeUsingWebSocket(audio, a.build(), new BaseRecognizeCallback() {
+//            @Override
+//            public void onTranscription(SpeechResults speechResults) {
+//                System.out.println(speechResults);
+//            }
+//        });
+        SpeechToText service = new SpeechToText();
+        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
+
+        InputStream ins = getResources().openRawResource(
+                getResources().getIdentifier("audio_file",
+                        "raw", getPackageName()));
+
+
+        Builder a = new Builder();
+        a.contentType("audio/wav");
+
+        RecognizeCallback s = new BaseRecognizeCallback();
+
+        service.recognizeUsingWebSocket(ins, a.build(),s);
+    }
+
+    private void testing2() {
+        SpeechToText service = new SpeechToText();
+        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
+
+        File audio = new File("src/main/res/raw/audio_file.wav");
+        Builder a = new Builder();
+        a.contentType(HttpMediaType.AUDIO_WAV);
+
+        SpeechResults transcript = service.recognize(audio, a.build()).execute();
+        System.out.println(transcript);
+    }
+
+    private void sendRequest() throws IOException, JSONException
+    {
+        String request = "https://mono-v.mybluemix.net/conversation";
+        URL url = new URL(request);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        JSONObject cred   = new JSONObject();
+        cred.put("text","hello");
+        cred.put("seat", 1);
+
+        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        wr.write(cred.toString());
+        wr.flush();
+
+        StringBuilder sb = new StringBuilder();
+        int HttpResult = connection.getResponseCode();
+        if (HttpResult == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            System.out.println("" + sb.toString());
+        } else {
+            System.out.println(connection.getResponseMessage());
+        }
     }
 
 
