@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, requestCode);
         }
+        speech_output = (TextView) findViewById(R.id.textView);
 
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.wav";
 
@@ -94,29 +95,16 @@ public class MainActivity extends AppCompatActivity {
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try  {
-                            try {
-                                sendRequest();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
 
-                thread.start();
 
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute("Hello");
 
                 play1.setEnabled(false);
                 record1.setEnabled(true);
                 stop1.setEnabled(true);
+
+
 
                 Toast.makeText(getApplicationContext(), "Conversation started", Toast.LENGTH_LONG).show();
             }
@@ -297,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(transcript);
     }
 
-    private void sendRequest() throws IOException, JSONException
+    private String sendRequest(String input) throws IOException, JSONException
     {
         String request = "https://mono-v.mybluemix.net/conversation";
         URL url = new URL(request);
@@ -307,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         connection.setDoOutput(true);
 
         JSONObject cred   = new JSONObject();
-        cred.put("text","hello");
+        cred.put("text",input);
         cred.put("seat", 1);
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
@@ -327,6 +315,64 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("" + sb.toString());
         } else {
             System.out.println(connection.getResponseMessage());
+        }
+        return sb.toString();
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<String, String, String> {
+
+        private String resp;
+
+        @Override
+        protected String doInBackground(String... params) {
+            publishProgress("Fetching Watson's Response...");
+            try {
+                resp = sendRequest(params[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+             catch (Exception e) {
+                 e.printStackTrace();
+             }
+            return resp;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            // execution of result of Long time consuming operation\
+            speech_output.setText(resp);
+            speech1.setEnabled(true);
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see android.os.AsyncTask#onPreExecute()
+         */
+        @Override
+        protected void onPreExecute() {
+            // Things to be done before execution of long running operation. For
+            // example showing ProgessDialon
+
+        }
+        /*
+         * (non-Javadoc)
+         *
+         * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+         */
+        @Override
+        protected void onProgressUpdate(String... text) {
+            // Things to be done while execution of long running operation is in
+            // progress. For example updating ProgessDialog
+            speech_output.setText(text[0]);
+            speech1.setEnabled(false);
         }
     }
 
