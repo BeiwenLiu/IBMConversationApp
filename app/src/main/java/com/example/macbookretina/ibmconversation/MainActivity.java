@@ -11,19 +11,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.EditText;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.os.AsyncTask;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
 
-
-import org.json.JSONObject;
 import org.json.JSONException;
 
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
@@ -33,27 +31,20 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.WebSocketManager;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
-
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.ArrayList;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.DataOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton;
     TextView speech_output;
+    EditText speech_input;
+    private APICall apiCall;
     private AudioRecordTest recorder;
     private String outputFile = null;
     private boolean permissionToRecordAccepted = false;
@@ -75,13 +66,17 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, requestCode);
         }
         speech_output = (TextView) findViewById(R.id.textView);
+        speech_input = (EditText) findViewById(R.id.editText);
 
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.wav";
 
         recorder = new AudioRecordTest(outputFile);
+        apiCall = new APICall();
 
         speechService = initSpeechToTextService();
 
+        ttsButton = (Button) findViewById(R.id.tts);
+        sttButton = (Button) findViewById(R.id.stt);
         record1 = (Button) findViewById(R.id.button_1);
         stop1 = (Button) findViewById(R.id.button_2);
         play1 = (Button) findViewById(R.id.button_3);
@@ -92,20 +87,41 @@ public class MainActivity extends AppCompatActivity {
 
         play1.setEnabled(false);
 
+        speech_input.setOnEditorActionListener(new OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(speech_input.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                return false;
+            }
+        });
+
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute(speech_input.getText().toString(), "1");
+            }
+        });
+
+        sttButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGoogleInputDialog();
+            }
+        });
+
+
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute("Hello");
+                runner.execute(speech_input.getText().toString(), "0");
 
-                play1.setEnabled(false);
+                play1.setEnabled(true);
                 record1.setEnabled(true);
-                stop1.setEnabled(true);
-
-
-
+                stop1.setEnabled(false);
                 Toast.makeText(getApplicationContext(), "Conversation started", Toast.LENGTH_LONG).show();
             }
         });
@@ -122,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 play1.setEnabled(false);
                 record1.setEnabled(false);
                 stop1.setEnabled(true);
-
                 Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
             }
         });
@@ -152,31 +167,13 @@ public class MainActivity extends AppCompatActivity {
         play1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
-                MediaPlayer m = new MediaPlayer();
-
-                try {
-                    m.setDataSource(outputFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    m.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                m.start();
-                m.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer m) {
-                        m.release();
-                    }
-                });
+                recorder.audioPlay(outputFile);
                 Toast.makeText(getApplicationContext(), "Playing audio", Toast.LENGTH_LONG).show();
             }
         });
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -234,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    speech_output.setText(result.get(0));
+                    speech_input.setText(result.get(0));
                 }
                 break;
             }
@@ -285,49 +282,24 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(transcript);
     }
 
-    private String sendRequest(String input) throws IOException, JSONException
-    {
-        String request = "https://mono-v.mybluemix.net/conversation";
-        URL url = new URL(request);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        JSONObject cred   = new JSONObject();
-        cred.put("text",input);
-        cred.put("seat", 1);
-
-        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
-        wr.write(cred.toString());
-        wr.flush();
-
-        StringBuilder sb = new StringBuilder();
-        int HttpResult = connection.getResponseCode();
-        if (HttpResult == HttpURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "utf-8"));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            br.close();
-            System.out.println("" + sb.toString());
-        } else {
-            System.out.println(connection.getResponseMessage());
-        }
-        return sb.toString();
-    }
 
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
 
         private String resp;
+        private byte[] a = null;
 
         @Override
         protected String doInBackground(String... params) {
             publishProgress("Fetching Watson's Response...");
             try {
-                resp = sendRequest(params[0]);
+                if (params[1].equals("0")) {
+                    apiCall.setURL("https://mono-v.mybluemix.net/conversation");
+                    resp = apiCall.sendRequest(params[0]);
+                } else if (params[1].equals("1")) {
+                    resp = "Successful";
+                    apiCall.setURL("https://mono-v.mybluemix.net/tts");
+                    a = apiCall.sendTTS(params[0]);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -349,6 +321,9 @@ public class MainActivity extends AppCompatActivity {
             // execution of result of Long time consuming operation\
             speech_output.setText(resp);
             speech1.setEnabled(true);
+            if (a != null) {
+                recorder.playMedia3(a);
+            }
         }
 
         /*
