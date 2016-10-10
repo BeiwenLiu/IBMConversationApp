@@ -21,6 +21,8 @@ import android.widget.TextView.OnEditorActionListener;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
+import android.widget.ToggleButton;
+import android.widget.CompoundButton;
 
 import org.json.JSONException;
 
@@ -43,7 +45,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1,speech1,sttButton,ttsButton;
     TextView speech_output;
+    ToggleButton toggle;
     EditText speech_input;
+    boolean automate;
     private APICall apiCall;
     private AudioRecordTest recorder;
     private String outputFile = null;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private SpeechToText speechService;
     public final int SPEECH_REQUEST_CODE = 123;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, requestCode);
         }
+        automate = false;
         speech_output = (TextView) findViewById(R.id.textView);
         speech_input = (EditText) findViewById(R.id.editText);
 
@@ -87,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
 
         play1.setEnabled(false);
 
+        toggle = (ToggleButton) findViewById(R.id.toggleButton);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    automate = true;
+                } else {
+                    automate = false;
+                }
+            }
+        });
+
         speech_input.setOnEditorActionListener(new OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -101,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_input.getText().toString(), "1");
+                runner.execute(speech_output.getText().toString(), "1");
             }
         });
 
@@ -118,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
                 runner.execute(speech_input.getText().toString(), "0");
+
 
                 play1.setEnabled(true);
                 record1.setEnabled(true);
@@ -287,16 +305,19 @@ public class MainActivity extends AppCompatActivity {
 
         private String resp;
         private byte[] a = null;
+        String options;
 
         @Override
         protected String doInBackground(String... params) {
-            publishProgress("Fetching Watson's Response...");
+            publishProgress(params[1],"Fetching Watson's Response...");
             try {
                 if (params[1].equals("0")) {
+                    options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/conversation");
                     resp = apiCall.sendRequest(params[0]);
                 } else if (params[1].equals("1")) {
-                    resp = "Successful";
+                    resp = params[0];
+                    options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/tts");
                     a = apiCall.sendTTS(params[0]);
                 }
@@ -324,6 +345,13 @@ public class MainActivity extends AppCompatActivity {
             if (a != null) {
                 recorder.playMedia3(a);
             }
+            System.out.println(automate);
+            System.out.println(options);
+            if (automate && options.equals("0")) {
+                AsyncTaskRunner a = new AsyncTaskRunner();
+                a.execute(speech_output.getText().toString(), "1");
+            }
+
         }
 
         /*
@@ -346,7 +374,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onProgressUpdate(String... text) {
             // Things to be done while execution of long running operation is in
             // progress. For example updating ProgessDialog
-            speech_output.setText(text[0]);
+            System.out.println(text[0]);
+            if (text[0].equals("0")) {
+                speech_output.setText(text[1]);
+            }
             speech1.setEnabled(false);
         }
     }
