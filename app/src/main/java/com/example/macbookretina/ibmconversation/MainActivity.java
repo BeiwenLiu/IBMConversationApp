@@ -1,7 +1,6 @@
 package com.example.macbookretina.ibmconversation;
 
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +26,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
@@ -46,7 +46,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1,speech1,sttButton,ttsButton,test;
-    TextView speech_output;
+    TextView speech_output, log_output;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+
+        log_output = (TextView) findViewById(R.id.textView2);
 
         test = (Button) findViewById(R.id.test);
         ttsButton = (Button) findViewById(R.id.tts);
@@ -144,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(checkRadioButton());
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
             }
         });
 
@@ -322,9 +325,13 @@ public class MainActivity extends AppCompatActivity {
 
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
 
+        private String url;
         private String resp;
         private byte[] a = null;
-        String options;
+        private String options;
+        private String input;
+        private String seatNumber;
+        private JSONObject ob;
 
         @Override
         protected String doInBackground(String... params) {
@@ -339,6 +346,14 @@ public class MainActivity extends AppCompatActivity {
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/tts");
                     a = apiCall.sendTTS(params[0]);
+                } else if (params[1].equals("2")) {
+                    options = params[1];
+                    url = "https://mono-v.mybluemix.net/conversation";
+                    apiCall.setURL(url);
+                    seatNumber = checkRadioButton();
+                    resp = apiCall.sendRequest(params[0],seatNumber);
+                    ob = apiCall.sendRequestJson(params[0],seatNumber);
+                    input = params[0];
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -366,11 +381,20 @@ public class MainActivity extends AppCompatActivity {
             }
             System.out.println(automate);
             System.out.println(options);
-            if (automate && options.equals("0")) {
+            if (options.equals("2")) {
+                StringBuffer a = new StringBuffer();
+                a.append("Your Input:\n" + input + "\n");
+                a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
+                a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
+                if (automate) {
+                    a.append("\nAutomate on - Watson will process this input:\n " + resp);
+                }
+                log_output.setText(a.toString());
+            }
+            if (automate && (options.equals("0") || options.equals("2"))) {
                 AsyncTaskRunner a = new AsyncTaskRunner();
                 a.execute(speech_output.getText().toString(), "1");
             }
-
         }
 
         /*

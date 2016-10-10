@@ -179,4 +179,16 @@
         android:layout_below="@+id/radioGroup"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/test"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/toggleButton"
+        android:layout_alignEnd="@+id/toggleButton" />
+
 </RelativeLayout>
