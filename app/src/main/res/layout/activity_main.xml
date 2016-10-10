@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:text="Response"
         android:id="@+id/textView"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/editText"
@@ -116,5 +115,68 @@
         android:layout_alignBottom="@+id/toggleButton"
         android:gravity="center"
         />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/radioGroup"
+        android:layout_alignRight="@+id/stt"
+        android:layout_alignEnd="@+id/stt"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seat 1"
+            android:id="@+id/seat1"
+            android:checked="true"
+            android:layout_below="@+id/textView"
+            android:layout_toLeftOf="@+id/button_4"
+            android:layout_toStartOf="@+id/button_4" />
+
+        <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seat 2"
+        android:id="@+id/seat2"
+        android:checked="false"
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/seat1"
+        android:layout_toEndOf="@+id/seat1" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seat 3"
+        android:id="@+id/seat3"
+        android:checked="false"
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/seat2"
+        android:layout_toEndOf="@+id/seat2" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seat 4"
+        android:id="@+id/seat4"
+        android:checked="false"
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/seat3"
+        android:layout_toEndOf="@+id/seat3" />
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test"
+        android:id="@+id/test"
+        android:layout_below="@+id/radioGroup"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

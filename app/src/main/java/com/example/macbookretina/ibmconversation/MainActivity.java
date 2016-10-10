@@ -23,6 +23,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import org.json.JSONException;
 
@@ -43,10 +45,14 @@ import java.util.Locale;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton,test;
     TextView speech_output;
     ToggleButton toggle;
+    RadioButton seatButton;
     EditText speech_input;
+
+    private RadioGroup radioGroup;
+    private int seatNumber;
     boolean automate;
     private APICall apiCall;
     private AudioRecordTest recorder;
@@ -81,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
         speechService = initSpeechToTextService();
 
+
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+
+        test = (Button) findViewById(R.id.test);
         ttsButton = (Button) findViewById(R.id.tts);
         sttButton = (Button) findViewById(R.id.stt);
         record1 = (Button) findViewById(R.id.button_1);
@@ -92,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         stop1.setEnabled(false);
 
         play1.setEnabled(false);
+
+
 
         toggle = (ToggleButton) findViewById(R.id.toggleButton);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -129,12 +141,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(checkRadioButton());
+            }
+        });
+
 
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_input.getText().toString(), "0");
+                runner.execute(speech_input.getText().toString(), "0",checkRadioButton());
 
 
                 play1.setEnabled(true);
@@ -314,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 if (params[1].equals("0")) {
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/conversation");
-                    resp = apiCall.sendRequest(params[0]);
+                    resp = apiCall.sendRequest(params[0],checkRadioButton());
                 } else if (params[1].equals("1")) {
                     resp = params[0];
                     options = params[1];
@@ -362,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             // Things to be done before execution of long running operation. For
-            // example showing ProgessDialon
+            // example showing ProgessDialog
 
         }
         /*
@@ -375,11 +394,32 @@ public class MainActivity extends AppCompatActivity {
             // Things to be done while execution of long running operation is in
             // progress. For example updating ProgessDialog
             System.out.println(text[0]);
+            speech_input.setText("");
             if (text[0].equals("0")) {
                 speech_output.setText(text[1]);
             }
             speech1.setEnabled(false);
         }
+    }
+
+    public String checkRadioButton() {
+        // Check which radio button was clicked
+        String answer = null;
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+
+        seatButton = (RadioButton) findViewById(selectedId);
+
+        if (seatButton.getText().toString().equals("Seat 1")) {
+            answer = "1";
+        } else if (seatButton.getText().toString().equals("Seat 2")) {
+            answer = "2";
+        } else if (seatButton.getText().toString().equals("Seat 3")) {
+            answer = "3";
+        } else if (seatButton.getText().toString().equals("Seat 4")) {
+            answer = "4";
+        }
+
+        return answer;
     }
 
 

@@ -24,7 +24,7 @@ public class APICall {
         this.request = url;
     }
 
-    public String sendRequest(String input) throws IOException, JSONException
+    public String sendRequest(String input, String seatNumber) throws IOException, JSONException
     {
         String request = "https://mono-v.mybluemix.net/conversation";
         URL url = new URL(request);
@@ -36,7 +36,7 @@ public class APICall {
 
         JSONObject cred   = new JSONObject();
         cred.put("text",input);
-        cred.put("seat", 1);
+        cred.put("seat", Integer.parseInt(seatNumber));
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
