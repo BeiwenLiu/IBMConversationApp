@@ -500,11 +500,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMarkerReached(AudioTrack track) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                if (speech_input.getText().toString().equals("")) {
+                if (speech_input.getText().toString().equals("") && automate) {
                     testCall = true;
                     showGoogleInputDialog();
-                } else {
-                    runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
                 }
             }
         });
