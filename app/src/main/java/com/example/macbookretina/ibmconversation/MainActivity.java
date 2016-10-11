@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.content.ActivityNotFoundException;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1,speech1,sttButton,ttsButton,test;
     TextView speech_output, log_output;
+    ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         automate = false;
         speech_output = (TextView) findViewById(R.id.textView);
         speech_input = (EditText) findViewById(R.id.editText);
-
+        scroll = (ScrollView) findViewById(R.id.scrollView2);
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.wav";
 
         recorder = new AudioRecordTest(outputFile);
@@ -405,13 +407,18 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(options);
             if (options.equals("2")) { //If 2 is called, textView2 will be populated with these values:
                 StringBuffer a = new StringBuffer();
-                a.append("Your Input:\n" + input + "\n");
+                a.append("\nYour Input:\n" + input + "\n");
                 a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
                 a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
                 if (automate) {
                     a.append("\nAutomate on - Watson will process this input:\n" + resp);
                 }
-                log_output.setText(a.toString());
+                if (log_output.getEditableText() == null) {
+                    log_output.append(a.toString());
+                } else {
+                    log_output.getEditableText().insert(0,a.toString());
+                }
+
             }
             if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
                 AsyncTaskRunner a = new AsyncTaskRunner();

@@ -114,6 +114,8 @@
         android:layout_toStartOf="@+id/toggleButton"
         android:layout_alignBottom="@+id/toggleButton"
         android:gravity="center"
+        android:scrollbars = "vertical"
+        android:maxLines="2000"
         />
 
     <RadioGroup
@@ -179,16 +181,17 @@
         android:layout_below="@+id/radioGroup"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:id="@+id/scrollView2"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView2"
+        android:fillViewport="true"
         android:layout_below="@+id/test"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/toggleButton"
-        android:layout_alignEnd="@+id/toggleButton" />
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </RelativeLayout>
