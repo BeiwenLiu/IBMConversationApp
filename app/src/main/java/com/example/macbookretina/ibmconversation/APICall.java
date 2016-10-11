@@ -121,13 +121,18 @@ public class APICall {
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            buffer = new byte[1024];
+            buffer = new byte[50];
             int len = 0;
+            int sum = 0;
             while ((len = in.read(buffer)) > 0) {
                 out.write(buffer, 0, len);
+                sum += len;
             }
 
+            System.out.println("len: " + len + " sum : " + sum);
+
             buffer = out.toByteArray();
+            System.out.println("buffer length: " + buffer.length);
         } else {
             System.out.println(connection.getResponseMessage());
         }

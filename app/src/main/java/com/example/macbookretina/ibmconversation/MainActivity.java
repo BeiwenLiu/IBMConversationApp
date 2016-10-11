@@ -1,6 +1,9 @@
 package com.example.macbookretina.ibmconversation;
 
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
-
+    private boolean testCall;
     private RadioGroup radioGroup;
     private int seatNumber;
     boolean automate;
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         play1.setEnabled(false);
 
+        testCall = false;
 
 
         toggle = (ToggleButton) findViewById(R.id.toggleButton);
@@ -148,7 +152,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+
+                if (speech_input.getText().toString().equals("")) {
+                    testCall = true;
+                    showGoogleInputDialog();
+                } else {
+                    runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                }
             }
         });
 
@@ -273,6 +283,16 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     speech_input.setText(result.get(0));
+                    if (automate) {
+                        if (testCall) {
+                            AsyncTaskRunner runner = new AsyncTaskRunner();
+                            runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                            testCall = false;
+                        } else {
+                            AsyncTaskRunner runner = new AsyncTaskRunner();
+                            runner.execute(speech_input.getText().toString(), "0",checkRadioButton());
+                        }
+                    }
                 }
                 break;
             }
@@ -338,23 +358,24 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             publishProgress(params[1],"Fetching Watson's Response...");
             try {
-                if (params[1].equals("0")) {
+                if (params[1].equals("0")) { //Conversation call
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/conversation");
                     resp = apiCall.sendRequest(params[0],checkRadioButton());
-                } else if (params[1].equals("1")) {
+                } else if (params[1].equals("1")) { //Text to Speech Call
                     resp = params[0];
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/tts");
                     a = apiCall.sendTTS(params[0]);
-                } else if (params[1].equals("2")) {
+                } else if (params[1].equals("2")) { //Test Button -> Prints out all information
                     options = params[1];
                     url = "https://mono-v.mybluemix.net/conversation";
                     apiCall.setURL(url);
                     seatNumber = checkRadioButton();
-                    resp = apiCall.sendRequest(params[0],seatNumber);
-                    ob = apiCall.sendRequestJson(params[0],seatNumber);
+                    resp = apiCall.sendRequest(params[0], seatNumber);
+                    ob = apiCall.sendRequestJson(params[0], seatNumber);
                     input = params[0];
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -378,24 +399,29 @@ public class MainActivity extends AppCompatActivity {
             speech_output.setText(resp);
             speech1.setEnabled(true);
             if (a != null) {
-                recorder.playMedia3(a);
+                playMedia3(a);
             }
             System.out.println(automate);
             System.out.println(options);
-            if (options.equals("2")) {
+            if (options.equals("2")) { //If 2 is called, textView2 will be populated with these values:
                 StringBuffer a = new StringBuffer();
                 a.append("Your Input:\n" + input + "\n");
                 a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
                 a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
                 if (automate) {
-                    a.append("\nAutomate on - Watson will process this input:\n " + resp);
+                    a.append("\nAutomate on - Watson will process this input:\n" + resp);
                 }
                 log_output.setText(a.toString());
             }
-            if (automate && (options.equals("0") || options.equals("2"))) {
+            if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
                 AsyncTaskRunner a = new AsyncTaskRunner();
                 a.execute(speech_output.getText().toString(), "1");
             }
+
+//            if (automate && options.equals("1")) {
+//                showGoogleInputDialog();
+//            }
+            speech_input.setText("");
         }
 
         /*
@@ -419,8 +445,7 @@ public class MainActivity extends AppCompatActivity {
             // Things to be done while execution of long running operation is in
             // progress. For example updating ProgessDialog
             System.out.println(text[0]);
-            speech_input.setText("");
-            if (text[0].equals("0")) {
+            if (text[0].equals("0") || text[0].equals("2")) {
                 speech_output.setText(text[1]);
             }
             speech1.setEnabled(false);
@@ -459,6 +484,31 @@ public class MainActivity extends AppCompatActivity {
                 ((InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void playMedia3(byte[] buffer) {
+        final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 11000, AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT,
+                buffer.length*2, AudioTrack.MODE_STATIC);
+        audioTrack.write(buffer, 0, buffer.length);
+        audioTrack.setNotificationMarkerPosition(10*buffer.length/45); //Tested this number through trial and error for delay... it works the best
+        audioTrack.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+            @Override
+            public void onPeriodicNotification(AudioTrack track) {
+                // nothing to do
+            }
+
+            @Override
+            public void onMarkerReached(AudioTrack track) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                if (speech_input.getText().toString().equals("")) {
+                    testCall = true;
+                    showGoogleInputDialog();
+                } else {
+                    runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                }
+            }
+        });
+        audioTrack.play();
     }
 
 }

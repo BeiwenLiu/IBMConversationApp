@@ -11,6 +11,7 @@ import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.media.RemoteControlClient.OnPlaybackPositionUpdateListener;
 import java.io.DataInputStream;
 
 /**
@@ -137,12 +138,6 @@ public class AudioRecordTest {
         }
     }
 
-    public void playMedia3(byte[] buffer) {
-        final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 11000,AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT,
-                buffer.length*2, AudioTrack.MODE_STATIC);
-        audioTrack.write(buffer, 0, buffer.length);
-        audioTrack.play();
-    }
 
     /**
      * Stops a recording that has been previously started.
