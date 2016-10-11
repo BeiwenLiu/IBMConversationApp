@@ -98,10 +98,10 @@
         android:layout_height="wrap_content"
         android:text="New ToggleButton"
         android:id="@+id/toggleButton"
+        android:checked="false"
         android:layout_below="@+id/button_4"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:checked="false" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -181,17 +181,113 @@
         android:layout_below="@+id/radioGroup"
         android:layout_centerHorizontal="true" />
 
-    <ScrollView
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:id="@+id/scrollView2"
+        android:layout_height="fill_parent"
+        android:scrollbars="horizontal" android:id="@+id/scrollView2"
+        android:fillViewport="false"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignRight="@+id/toggleButton"
+        android:layout_alignEnd="@+id/toggleButton"
+        android:background="@drawable/border2">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
+        android:orientation="horizontal"
         android:layout_below="@+id/test"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:background="#FFFFFF"
+            android:padding="7dp"/>
+
+
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:padding="7dp"/>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:padding="7dp"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:padding="7dp"/>
+
+    </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/test"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/border">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Driver"
+            android:layout_gravity="left"
+            android:background="#FFFFFF"
+            android:padding="7dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:padding="7dp"
+            android:text="Passenger"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="BackSeat1"
+            android:background="#FFFFFF"
+            android:padding="7dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="BackSeat2"
+            android:background="#FFFFFF"
+            android:padding="7dp"
+            android:textSize="18sp"/>
+    </LinearLayout>
 
 </RelativeLayout>

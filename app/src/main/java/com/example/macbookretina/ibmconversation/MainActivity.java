@@ -51,7 +51,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button play1,stop1,record1,speech1,sttButton,ttsButton,test;
-    TextView speech_output, log_output;
+    TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
@@ -96,7 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
-        log_output = (TextView) findViewById(R.id.textView2);
+        log_output1 = (TextView) findViewById(R.id.textView1);
+        log_output2 = (TextView) findViewById(R.id.textView2);
+        log_output3 = (TextView) findViewById(R.id.textView5);
+        log_output4 = (TextView) findViewById(R.id.textView4);
 
         test = (Button) findViewById(R.id.test);
         ttsButton = (Button) findViewById(R.id.tts);
@@ -286,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     speech_input.setText(result.get(0));
                     if (automate) {
-                        if (testCall) {
+                        if (testCall) { //If test button was pushed
                             AsyncTaskRunner runner = new AsyncTaskRunner();
                             runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
                             testCall = false;
@@ -363,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
                 if (params[1].equals("0")) { //Conversation call
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/conversation");
-                    resp = apiCall.sendRequest(params[0],checkRadioButton());
+                    resp = apiCall.sendRequest(params[0],checkRadioButton()).get("transcription").toString();
                 } else if (params[1].equals("1")) { //Text to Speech Call
                     resp = params[0];
                     options = params[1];
@@ -374,8 +377,8 @@ public class MainActivity extends AppCompatActivity {
                     url = "https://mono-v.mybluemix.net/conversation";
                     apiCall.setURL(url);
                     seatNumber = checkRadioButton();
-                    resp = apiCall.sendRequest(params[0], seatNumber);
-                    ob = apiCall.sendRequestJson(params[0], seatNumber);
+                    ob = apiCall.sendRequest(params[0], seatNumber);
+                    resp = ob.get("transcription").toString();
                     input = params[0];
 
                 }
@@ -410,14 +413,37 @@ public class MainActivity extends AppCompatActivity {
                 a.append("\nYour Input:\n" + input + "\n");
                 a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
                 a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
+                System.out.println("This should print: " + resp);
                 if (automate) {
                     a.append("\nAutomate on - Watson will process this input:\n" + resp);
                 }
-                if (log_output.getEditableText() == null) {
-                    log_output.append(a.toString());
-                } else {
-                    log_output.getEditableText().insert(0,a.toString());
+                a.append("\n________________________________________\n");
+                if (seatNumber.equals("1")) {
+                    if (log_output1.getEditableText() == null) {
+                        log_output1.append(a.toString());
+                    } else {
+                        log_output1.getEditableText().insert(0,a.toString());
+                    }
+                } else if (seatNumber.equals("2")) {
+                    if (log_output2.getEditableText() == null) {
+                        log_output2.append(a.toString());
+                    } else {
+                        log_output2.getEditableText().insert(0,a.toString());
+                    }
+                } else if (seatNumber.equals("3")) {
+                    if (log_output3.getEditableText() == null) {
+                        log_output3.append(a.toString());
+                    } else {
+                        log_output3.getEditableText().insert(0,a.toString());
+                    }
+                } else if (seatNumber.equals("4")) {
+                    if (log_output4.getEditableText() == null) {
+                        log_output4.append(a.toString());
+                    } else {
+                        log_output4.getEditableText().insert(0,a.toString());
+                    }
                 }
+
 
             }
             if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
