@@ -19,14 +19,17 @@ import java.net.URL;
  */
 public class APICall {
     String request;
-
+    String id;
     public void setURL(String url) {
         this.request = url;
     }
 
+    public void setID(String id) {
+        this.id = id;
+    }
+
     public JSONObject sendRequest(String input, String seatNumber) throws IOException, JSONException
     {
-        String request = "https://mono-v.mybluemix.net/conversation";
         URL url = new URL(request);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -37,6 +40,7 @@ public class APICall {
         JSONObject cred   = new JSONObject();
         cred.put("text",input);
         cred.put("seat", Integer.parseInt(seatNumber));
+        cred.put("demo_id",id);
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
@@ -129,13 +133,76 @@ public class APICall {
                 sum += len;
             }
 
-            System.out.println("len: " + len + " sum : " + sum);
 
             buffer = out.toByteArray();
-            System.out.println("buffer length: " + buffer.length);
         } else {
             System.out.println(connection.getResponseMessage());
         }
         return buffer;
+    }
+
+    public JSONObject demoinit() throws IOException, JSONException
+    {
+        URL url = new URL(request);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+        JSONObject out = null;
+
+        JSONObject cred   = new JSONObject();
+        cred.put("demo_id",id);
+
+        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        wr.write(cred.toString());
+        wr.flush();
+
+        StringBuilder sb = new StringBuilder();
+        int HttpResult = connection.getResponseCode();
+        if (HttpResult == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            out = new JSONObject(sb.toString());
+        } else {
+            System.out.println(connection.getResponseMessage());
+        }
+        return out;
+    }
+
+    public JSONObject demoEnd() throws IOException, JSONException
+    {
+        URL url = new URL(request);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+        JSONObject out = null;
+
+        JSONObject cred   = new JSONObject();
+
+        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        wr.write(cred.toString());
+        wr.flush();
+
+        StringBuilder sb = new StringBuilder();
+        int HttpResult = connection.getResponseCode();
+        if (HttpResult == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            out = new JSONObject(sb.toString());
+        } else {
+            System.out.println(connection.getResponseMessage());
+        }
+        return out;
     }
 }

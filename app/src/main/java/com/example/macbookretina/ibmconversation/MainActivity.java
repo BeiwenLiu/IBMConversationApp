@@ -29,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.view.MotionEvent;
+import android.view.ViewTreeObserver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,12 +51,13 @@ import java.util.Locale;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton,test;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
+    int width;
     private boolean testCall;
     private RadioGroup radioGroup;
     private int seatNumber;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private SpeechToText speechService;
     public final int SPEECH_REQUEST_CODE = 123;
+    private String demo_id;
 
 
     @Override
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         recorder = new AudioRecordTest(outputFile);
         apiCall = new APICall();
 
+
         speechService = initSpeechToTextService();
 
 
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         play1 = (Button) findViewById(R.id.button_3);
         speech1 = (Button) findViewById(R.id.button_4);
         speech_output = (TextView) findViewById(R.id.textView);
+        reset = (Button) findViewById(R.id.reset);
 
         stop1.setEnabled(false);
 
@@ -116,6 +121,16 @@ public class MainActivity extends AppCompatActivity {
 
         testCall = false;
 
+        AsyncTaskRunner demoinit = new AsyncTaskRunner();
+        demoinit.execute("","3");
+
+        log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                log_output1.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                width = log_output1.getWidth() / 14; //height is ready
+            }
+        });
 
         toggle = (ToggleButton) findViewById(R.id.toggleButton);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -143,6 +158,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
                 runner.execute(speech_output.getText().toString(), "1");
+            }
+        });
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute("", "4");
             }
         });
 
@@ -380,7 +403,16 @@ public class MainActivity extends AppCompatActivity {
                     ob = apiCall.sendRequest(params[0], seatNumber);
                     resp = ob.get("transcription").toString();
                     input = params[0];
-
+                } else if (params[1].equals("3")) {
+                    options = params[1];
+                    url = "https://mono-v.mybluemix.net/demo/init";
+                    apiCall.setURL(url);
+                    resp = apiCall.demoinit().get("demo_id").toString();
+                } else if (params[1].equals("4")) {
+                    options = params[1];
+                    url = "https://mono-v.mybluemix.net/demo/end";
+                    apiCall.setURL(url);
+                    resp = apiCall.demoEnd().toString();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -401,60 +433,80 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // execution of result of Long time consuming operation\
-            speech_output.setText(resp);
-            speech1.setEnabled(true);
-            if (a != null) {
-                playMedia3(a);
-            }
-            System.out.println(automate);
-            System.out.println(options);
-            if (options.equals("2")) { //If 2 is called, textView2 will be populated with these values:
-                StringBuffer a = new StringBuffer();
-                a.append("\nYour Input:\n" + input + "\n");
-                a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
-                a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
-                System.out.println("This should print: " + resp);
-                if (automate) {
-                    a.append("\nAutomate on - Watson will process this input:\n" + resp);
+            if (options.equals("0") || options.equals("1") || options.equals("2")) {
+                speech_output.setText(resp);
+                speech1.setEnabled(true);
+                if (a != null) {
+                    playMedia3(a);
                 }
-                a.append("\n________________________________________\n");
-                if (seatNumber.equals("1")) {
-                    if (log_output1.getEditableText() == null) {
-                        log_output1.append(a.toString());
-                    } else {
-                        log_output1.getEditableText().insert(0,a.toString());
+                System.out.println(automate);
+                System.out.println(options);
+                if (options.equals("2")) { //If 2 is called, textView2 will be populated with these values:
+                    StringBuffer a = new StringBuffer();
+                    StringBuffer divider = new StringBuffer();
+                    a.append("\nYour Input:\n" + input + "\n");
+                    a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
+                    a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
+                    a.append("\nID:\n" + demo_id + "\n");
+                    if (automate) {
+                        a.append("\nAutomate on - Watson will process this input:\n" + resp);
                     }
-                } else if (seatNumber.equals("2")) {
-                    if (log_output2.getEditableText() == null) {
-                        log_output2.append(a.toString());
-                    } else {
-                        log_output2.getEditableText().insert(0,a.toString());
+                    for (int i = 0; i < width; i++) {
+
+                        divider.append("_");
                     }
-                } else if (seatNumber.equals("3")) {
-                    if (log_output3.getEditableText() == null) {
-                        log_output3.append(a.toString());
-                    } else {
-                        log_output3.getEditableText().insert(0,a.toString());
+                    a.append("\n" + divider.toString() + "\n");
+                    if (seatNumber.equals("1")) {
+                        if (log_output1.getEditableText() == null) {
+                            log_output1.append(a.toString());
+                        } else {
+                            log_output1.getEditableText().insert(0, a.toString());
+                        }
+                    } else if (seatNumber.equals("2")) {
+                        if (log_output2.getEditableText() == null) {
+                            log_output2.append(a.toString());
+                        } else {
+                            log_output2.getEditableText().insert(0, a.toString());
+                        }
+                    } else if (seatNumber.equals("3")) {
+                        if (log_output3.getEditableText() == null) {
+                            log_output3.append(a.toString());
+                        } else {
+                            log_output3.getEditableText().insert(0, a.toString());
+                        }
+                    } else if (seatNumber.equals("4")) {
+                        if (log_output4.getEditableText() == null) {
+                            log_output4.append(a.toString());
+                        } else {
+                            log_output4.getEditableText().insert(0, a.toString());
+                        }
                     }
-                } else if (seatNumber.equals("4")) {
-                    if (log_output4.getEditableText() == null) {
-                        log_output4.append(a.toString());
-                    } else {
-                        log_output4.getEditableText().insert(0,a.toString());
-                    }
-                }
 
 
-            }
-            if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
-                AsyncTaskRunner a = new AsyncTaskRunner();
-                a.execute(speech_output.getText().toString(), "1");
-            }
+                }
+                if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
+                    AsyncTaskRunner a = new AsyncTaskRunner();
+                    a.execute(speech_output.getText().toString(), "1");
+                }
 
 //            if (automate && options.equals("1")) {
 //                showGoogleInputDialog();
 //            }
-            speech_input.setText("");
+                speech_input.setText("");
+            } else { //For cases>2
+                if (options.equals("4")) {
+                    log_output1.setText("");
+                    log_output2.setText("");
+                    log_output3.setText("");
+                    log_output4.setText("");
+                    speech_output.setText(resp);
+                    AsyncTaskRunner a = new AsyncTaskRunner();
+                    a.execute("", "3");
+                } else if (options.equals("3")) {
+                    demo_id = resp;
+                    apiCall.setID(demo_id); //Set New ID
+                }
+            }
         }
 
         /*

@@ -116,6 +116,7 @@
         android:gravity="center"
         android:scrollbars = "vertical"
         android:maxLines="2000"
+        android:freezesText="true"
         />
 
     <RadioGroup
@@ -209,7 +210,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:background="#FFFFFF"
-            android:padding="7dp"/>
+            android:padding="7dp"
+            android:freezesText="true"/>
 
 
         <TextView
@@ -218,7 +220,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:padding="7dp"/>
+            android:padding="7dp"
+            android:freezesText="true"/>
 
         <TextView
             android:id="@+id/textView5"
@@ -226,7 +229,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:padding="7dp"/>
+            android:padding="7dp"
+            android:freezesText="true"/>
 
         <TextView
             android:id="@+id/textView4"
@@ -234,7 +238,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:padding="7dp"/>
+            android:padding="7dp"
+            android:freezesText="true"/>
 
     </LinearLayout>
     </ScrollView>
@@ -257,7 +262,8 @@
             android:layout_gravity="left"
             android:background="#FFFFFF"
             android:padding="7dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="#ff00796b"/>
 
         <TextView
             android:id="@+id/textView7"
@@ -267,7 +273,8 @@
             android:background="#FFFFFF"
             android:padding="7dp"
             android:text="Passenger"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="#ff00796b"/>
 
         <TextView
             android:id="@+id/textView8"
@@ -277,7 +284,8 @@
             android:text="BackSeat1"
             android:background="#FFFFFF"
             android:padding="7dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="#ff00796b"/>
 
         <TextView
             android:id="@+id/textView9"
@@ -287,7 +295,19 @@
             android:text="BackSeat2"
             android:background="#FFFFFF"
             android:padding="7dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textColor="#ff00796b"/>
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:id="@+id/reset"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="#ff0000"
+        android:textColor="#ffffff"/>
 
 </RelativeLayout>
