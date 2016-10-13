@@ -30,6 +30,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
+import android.speech.tts.TextToSpeech;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,12 +52,15 @@ import java.util.Locale;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
+
+    TextToSpeech t1;
+
     int width;
     private boolean testCall;
     private RadioGroup radioGroup;
@@ -79,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Required for permissions
         int requestCode = 200;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, requestCode);
         }
+
         automate = false;
         speech_output = (TextView) findViewById(R.id.textView);
         speech_input = (EditText) findViewById(R.id.editText);
@@ -94,9 +98,7 @@ public class MainActivity extends AppCompatActivity {
         recorder = new AudioRecordTest(outputFile);
         apiCall = new APICall();
 
-
         speechService = initSpeechToTextService();
-
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
@@ -114,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
         speech1 = (Button) findViewById(R.id.button_4);
         speech_output = (TextView) findViewById(R.id.textView);
         reset = (Button) findViewById(R.id.reset);
+        sttIBM = (Button) findViewById(R.id.sstIBM);
+        ttsGoogle = (Button) findViewById(R.id.ttsGoogle);
 
         stop1.setEnabled(false);
 
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         testCall = false;
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
-        demoinit.execute("","3");
+        demoinit.execute("", "3");
 
         log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -132,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Automate Watson
         toggle = (ToggleButton) findViewById(R.id.toggleButton);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -143,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Input text
         speech_input.setOnEditorActionListener(new OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -153,29 +159,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ttsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_output.getText().toString(), "1");
-            }
-        });
-
-        reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute("", "4");
-            }
-        });
-
-        sttButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showGoogleInputDialog();
-            }
-        });
-
+        //Test Button
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,12 +174,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        //Conversation Button
+        speech1.setEnabled(false);
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_input.getText().toString(), "0",checkRadioButton());
+                runner.execute(speech_input.getText().toString(), "0", checkRadioButton());
 
 
                 play1.setEnabled(true);
@@ -205,6 +190,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Reset Button
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute("", "4");
+            }
+        });
+
+        record1.setEnabled(false);
         record1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,126 +245,56 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Playing audio", Toast.LENGTH_LONG).show();
             }
         });
-    }
 
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 200:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToRecordAccepted ) MainActivity.super.finish();
-        if (!permissionToWriteAccepted ) MainActivity.super.finish();
-
-    }
-
-    private SpeechToText initSpeechToTextService() {
-        SpeechToText service = new SpeechToText();
-        String username = "e8ed3836-7273-493c-b5e0-f7e1283f61d6";
-        String password = "Nsg0gxPZ0k4m";
-        service.setUsernameAndPassword(username, password);
-        service.setEndPoint("https://stream.watsonplatform.net/speech-to-text/api");
-        return service;
-    }
-
-    private RecognizeOptions getRecognizeOptions() {
-        Builder a = new Builder(); //Instantiating RecognizeOptions is deprecated
-        a.continuous(true);
-        a.contentType(MicrophoneInputStream.CONTENT_TYPE);
-        a.model("en-US_BroadbandModel");
-        a.interimResults(true);
-        a.inactivityTimeout(2000);
-        return a.build();
-    }
-
-    public void showGoogleInputDialog() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        try {
-            startActivityForResult(intent, SPEECH_REQUEST_CODE);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(), "Your device is not supported!",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case SPEECH_REQUEST_CODE: {
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    speech_input.setText(result.get(0));
-                    if (automate) {
-                        if (testCall) { //If test button was pushed
-                            AsyncTaskRunner runner = new AsyncTaskRunner();
-                            runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
-                            testCall = false;
-                        } else {
-                            AsyncTaskRunner runner = new AsyncTaskRunner();
-                            runner.execute(speech_input.getText().toString(), "0",checkRadioButton());
-                        }
-                    }
-                }
-                break;
+        //Text To Speech IBM
+        ttsButton.setEnabled(false);
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                runner.execute(speech_output.getText().toString(), "1");
             }
+        });
 
-        }
+        //Text To Speech Google
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.US);
+                }
+            }
+        });
+
+        ttsGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSpeak = speech_input.getText().toString();
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+
+
+        //Speech to Text IBM
+        sttIBM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speechToTextIBM();
+            }
+        });
+
+        //Speech to Text Google
+        sttButton.setEnabled(false);
+        sttButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGoogleInputDialog();
+            }
+        });
+
     }
 
-    private void test() throws FileNotFoundException {
-
-//        InputStream audio = new FileInputStream(outputFile);
-//
-//        SpeechToText service = new SpeechToText();
-//        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
-//        Builder a = new Builder();
-//        a.continuous(true).interimResults(true).contentType(HttpMediaType.AUDIO_WAV);
-//
-//        service.recognizeUsingWebSocket(audio, a.build(), new BaseRecognizeCallback() {
-//            @Override
-//            public void onTranscription(SpeechResults speechResults) {
-//                System.out.println(speechResults);
-//            }
-//        });
-        SpeechToText service = new SpeechToText();
-        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
-
-        InputStream ins = getResources().openRawResource(
-                getResources().getIdentifier("audio_file",
-                        "raw", getPackageName()));
-
-
-        Builder a = new Builder();
-        a.contentType("audio/wav");
-
-        RecognizeCallback s = new BaseRecognizeCallback();
-
-        service.recognizeUsingWebSocket(ins, a.build(),s);
-    }
-
-    private void testing2() {
-        SpeechToText service = new SpeechToText();
-        service.setUsernameAndPassword("e8ed3836-7273-493c-b5e0-f7e1283f61d6", "Nsg0gxPZ0k4m");
-
-        File audio = new File("src/main/res/raw/audio_file.wav");
-        Builder a = new Builder();
-        a.contentType(HttpMediaType.AUDIO_WAV);
-
-        SpeechResults transcript = service.recognize(audio, a.build()).execute();
-        System.out.println(transcript);
-    }
 
 
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
@@ -412,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                     options = params[1];
                     url = "https://mono-v.mybluemix.net/demo/end";
                     apiCall.setURL(url);
-                    resp = apiCall.demoEnd().toString();
+                    resp = apiCall.demoEnd().get("message").toString();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -435,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             // execution of result of Long time consuming operation\
             if (options.equals("0") || options.equals("1") || options.equals("2")) {
                 speech_output.setText(resp);
-                speech1.setEnabled(true);
+                //speech1.setEnabled(true);
                 if (a != null) {
                     playMedia3(a);
                 }
@@ -446,8 +371,12 @@ public class MainActivity extends AppCompatActivity {
                     StringBuffer divider = new StringBuffer();
                     a.append("\nYour Input:\n" + input + "\n");
                     a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
-                    a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
-                    a.append("\nID:\n" + demo_id + "\n");
+                    if (ob == null) {
+                        speech_output.setText("Please connect to the Internet!");
+                    } else {
+                        a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
+                    }
+                    a.append("\nDemo ID:\n" + demo_id + "\n");
                     if (automate) {
                         a.append("\nAutomate on - Watson will process this input:\n" + resp);
                     }
@@ -533,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
             if (text[0].equals("0") || text[0].equals("2")) {
                 speech_output.setText(text[1]);
             }
-            speech1.setEnabled(false);
+            //speech1.setEnabled(false);
         }
     }
 
@@ -555,6 +484,95 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return answer;
+    }
+
+
+    /*
+    IBM Speech to Text and Text to Speech
+     */
+    private SpeechToText initSpeechToTextService() {
+        SpeechToText service = new SpeechToText();
+        String username = "e8ed3836-7273-493c-b5e0-f7e1283f61d6";
+        String password = "Nsg0gxPZ0k4m";
+        service.setUsernameAndPassword(username, password);
+        service.setEndPoint("https://stream.watsonplatform.net/speech-to-text/api");
+        return service;
+    }
+
+    private RecognizeOptions getRecognizeOptions() {
+        Builder a = new Builder(); //Instantiating RecognizeOptions is deprecated
+        a.continuous(true);
+        a.contentType(MicrophoneInputStream.CONTENT_TYPE);
+        a.model("en-US_BroadbandModel");
+        a.interimResults(true);
+        a.inactivityTimeout(2000);
+        return a.build();
+    }
+
+    private void speechToTextIBM() {
+        speechService.recognizeUsingWebSocket(new MicrophoneInputStream(),
+                getRecognizeOptions(), new BaseRecognizeCallback() {
+                    @Override
+                    public void onTranscription(SpeechResults speechResults) {
+                        String text = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
+                        System.out.println(text);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                    }
+
+                    @Override
+                    public void onDisconnected() {
+                        System.out.println("Done");
+                    }
+
+                });
+    }
+
+     /*-----------------------------------------
+    Google Speech to Text and Text to Speech
+     */
+
+    public void showGoogleInputDialog() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "Your device is not supported!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case SPEECH_REQUEST_CODE: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    speech_input.setText(result.get(0));
+                    if (automate) {
+                        if (testCall) { //If test button was pushed
+                            AsyncTaskRunner runner = new AsyncTaskRunner();
+                            runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                            testCall = false;
+                        } else {
+                            AsyncTaskRunner runner = new AsyncTaskRunner();
+                            runner.execute(speech_input.getText().toString(), "0",checkRadioButton());
+                        }
+                    }
+                }
+                break;
+            }
+
+        }
     }
 
     @Override
@@ -592,6 +610,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         audioTrack.play();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 200:
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionToRecordAccepted ) MainActivity.super.finish();
+        if (!permissionToWriteAccepted ) MainActivity.super.finish();
+
     }
 
 }

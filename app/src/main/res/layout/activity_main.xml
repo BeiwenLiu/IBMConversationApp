@@ -40,12 +40,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Speech To Text"
+        android:text="SST Google"
         android:id="@+id/stt"
         android:layout_toRightOf="@+id/button_1"
         android:layout_alignTop="@+id/button_1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignRight="@+id/test"
+        android:layout_alignEnd="@+id/test"
+        android:layout_above="@+id/button_2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -61,12 +62,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Text To Speech"
+        android:text="TTS IBM"
         android:id="@+id/tts"
         android:layout_alignBottom="@+id/button_2"
         android:layout_toRightOf="@+id/button_2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignRight="@+id/stt"
+        android:layout_alignEnd="@+id/stt"
+        android:layout_below="@+id/stt" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -125,11 +127,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:id="@+id/radioGroup"
-        android:layout_alignRight="@+id/stt"
-        android:layout_alignEnd="@+id/stt"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/button_4"
+        android:layout_alignEnd="@+id/button_4">
 
 
         <RadioButton
@@ -143,34 +145,34 @@
             android:layout_toStartOf="@+id/button_4" />
 
         <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seat 2"
-        android:id="@+id/seat2"
-        android:checked="false"
-        android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/seat1"
-        android:layout_toEndOf="@+id/seat1" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seat 2"
+            android:id="@+id/seat2"
+            android:checked="false"
+            android:layout_below="@+id/textView"
+            android:layout_toRightOf="@+id/seat1"
+            android:layout_toEndOf="@+id/seat1" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seat 3"
-        android:id="@+id/seat3"
-        android:checked="false"
-        android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/seat2"
-        android:layout_toEndOf="@+id/seat2" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seat 3"
+            android:id="@+id/seat3"
+            android:checked="false"
+            android:layout_below="@+id/textView"
+            android:layout_toRightOf="@+id/seat2"
+            android:layout_toEndOf="@+id/seat2" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seat 4"
-        android:id="@+id/seat4"
-        android:checked="false"
-        android:layout_below="@+id/textView"
-        android:layout_toRightOf="@+id/seat3"
-        android:layout_toEndOf="@+id/seat3" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seat 4"
+            android:id="@+id/seat4"
+            android:checked="false"
+            android:layout_below="@+id/textView"
+            android:layout_toRightOf="@+id/seat3"
+            android:layout_toEndOf="@+id/seat3" />
 
     </RadioGroup>
 
@@ -192,56 +194,56 @@
         android:layout_alignEnd="@+id/toggleButton"
         android:background="@drawable/border2">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/test"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:background="#FFFFFF"
-            android:padding="7dp"
-            android:freezesText="true"/>
+            android:orientation="horizontal"
+            android:layout_below="@+id/test"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:background="#FFFFFF"
+                android:padding="7dp"
+                android:freezesText="true"/>
 
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:padding="7dp"
-            android:freezesText="true"/>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="7dp"
+                android:freezesText="true"/>
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:padding="7dp"
-            android:freezesText="true"/>
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="7dp"
+                android:freezesText="true"/>
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:padding="7dp"
-            android:freezesText="true"/>
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="7dp"
+                android:freezesText="true"/>
 
-    </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -309,5 +311,25 @@
         android:layout_alignParentEnd="true"
         android:backgroundTint="#ff0000"
         android:textColor="#ffffff"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SST IBM"
+        android:id="@+id/sstIBM"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/stt"
+        android:layout_alignRight="@+id/button_4"
+        android:layout_alignEnd="@+id/button_4" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TTS GOOGLE"
+        android:id="@+id/ttsGoogle"
+        android:layout_alignBottom="@+id/tts"
+        android:layout_toRightOf="@+id/stt"
+        android:layout_alignRight="@+id/sstIBM"
+        android:layout_alignEnd="@+id/sstIBM" />
 
 </RelativeLayout>
