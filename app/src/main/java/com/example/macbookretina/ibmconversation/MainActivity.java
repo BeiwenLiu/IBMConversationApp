@@ -7,6 +7,7 @@ import android.media.AudioTrack;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -37,10 +38,12 @@ import org.json.JSONObject;
 
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
 import com.ibm.watson.developer_cloud.http.HttpMediaType;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechModel;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechSession;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 
@@ -48,6 +51,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ArrayList;
 
@@ -58,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input;
+
+    SpeechToText service;
+
+    String textIBM;
 
     TextToSpeech t1;
 
@@ -74,7 +82,15 @@ public class MainActivity extends AppCompatActivity {
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     private SpeechToText speechService;
     public final int SPEECH_REQUEST_CODE = 123;
+
+    boolean IBMstt;
+    boolean IBMtts;
+    boolean Googlesst;
+    boolean Googletts;
+
+
     private String demo_id;
+    private String profile_id;
 
 
     @Override
@@ -89,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissions, requestCode);
         }
 
+        service = initSpeechToTextService();
+
         automate = false;
         speech_output = (TextView) findViewById(R.id.textView);
         speech_input = (EditText) findViewById(R.id.editText);
@@ -98,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         recorder = new AudioRecordTest(outputFile);
         apiCall = new APICall();
 
-        speechService = initSpeechToTextService();
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
@@ -118,10 +135,6 @@ public class MainActivity extends AppCompatActivity {
         reset = (Button) findViewById(R.id.reset);
         sttIBM = (Button) findViewById(R.id.sstIBM);
         ttsGoogle = (Button) findViewById(R.id.ttsGoogle);
-
-        stop1.setEnabled(false);
-
-        play1.setEnabled(false);
 
         testCall = false;
 
@@ -167,7 +180,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (speech_input.getText().toString().equals("")) {
                     testCall = true;
-                    showGoogleInputDialog();
+                    if (!sttButton.isEnabled()) {
+                        showGoogleInputDialog();
+                    } else if (!sttIBM.isEnabled()) {
+                        TranslationTask ex = new TranslationTask();
+                        ex.execute();
+                    }
                 } else {
                     runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
                 }
@@ -175,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Conversation Button
-        speech1.setEnabled(false);
         speech1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        record1.setEnabled(false);
         record1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,23 +254,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        play1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
-                recorder.audioPlay(outputFile);
-                Toast.makeText(getApplicationContext(), "Playing audio", Toast.LENGTH_LONG).show();
-            }
-        });
+//        play1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
+//                recorder.audioPlay(outputFile);
+//                Toast.makeText(getApplicationContext(), "Playing audio", Toast.LENGTH_LONG).show();
+//            }
+//        });
 
-        //Text To Speech IBM
-        ttsButton.setEnabled(false);
-        ttsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute(speech_output.getText().toString(), "1");
-            }
-        });
+//        //Text To Speech IBM
+//        ttsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AsyncTaskRunner runner = new AsyncTaskRunner();
+//                runner.execute(speech_output.getText().toString(), "1");
+//            }
+//        });
 
         //Text To Speech Google
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -262,34 +277,99 @@ public class MainActivity extends AppCompatActivity {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.US);
+                    t1.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onDone(String utteranceId) {
+                            // Log.d("MainActivity", "TTS finished");
+                            if (!sttButton.isEnabled()) {
+                                showGoogleInputDialog();
+                            }
+                        }
+                        @Override
+                        public void onError(String utteranceId) {
+                        }
+
+                        @Override
+                        public void onStart(String utteranceId) {
+                        }
+                    });
+                }
+            }
+        });
+//
+//        ttsGoogle.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String toSpeak = speech_output.getText().toString();
+//                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+//                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+//            }
+//        });
+
+        //Text to Speech IBM
+        ttsButton.setEnabled(true);
+        ttsButton.setBackgroundColor(0x8000796b);
+        ttsButton.setTextColor(0xffffffff);
+        ttsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!ttsGoogle.isEnabled()) {
+                    ttsGoogle.setEnabled(true);
+                    ttsGoogle.setBackgroundColor(0x8000796b);
+                    ttsButton.setEnabled(false);
+                    ttsButton.setBackgroundColor(0xff00796b);
                 }
             }
         });
 
+        //Text to Speech Google
+        ttsGoogle.setEnabled(false);
+        ttsGoogle.setBackgroundColor(0xff00796b);
+        ttsGoogle.setTextColor(0xffffffff);
         ttsGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String toSpeak = speech_input.getText().toString();
-                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                if (!ttsButton.isEnabled()) {
+                    ttsButton.setEnabled(true);
+                    ttsButton.setBackgroundColor(0x8000796b);
+                    ttsGoogle.setEnabled(false);
+                    ttsGoogle.setBackgroundColor(0xff00796b);
+                }
             }
         });
 
 
         //Speech to Text IBM
+        sttIBM.setEnabled(true);
+        sttIBM.setBackgroundColor(0x8000796b);
+        sttIBM.setTextColor(0xffffffff);
         sttIBM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                speechToTextIBM();
+                //speechToTextIBM(initSpeechToTextService());
+                if (!sttButton.isEnabled()) {
+                    sttButton.setEnabled(true);
+                    sttButton.setBackgroundColor(0x8000796b);
+                    sttIBM.setEnabled(false);
+                    sttIBM.setBackgroundColor(0xff00796b);
+                }
             }
         });
 
         //Speech to Text Google
         sttButton.setEnabled(false);
+        sttButton.setBackgroundColor(0xff00796b);
+        sttButton.setTextColor(0xffffffff);
         sttButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showGoogleInputDialog();
+                if (!sttIBM.isEnabled()) {
+                    sttIBM.setEnabled(true);
+                    sttIBM.setBackgroundColor(0x8000796b);
+                    sttButton.setEnabled(false);
+                    sttButton.setBackgroundColor(0xff00796b);
+                }
+                //showGoogleInputDialog();
             }
         });
 
@@ -338,6 +418,8 @@ public class MainActivity extends AppCompatActivity {
                     url = "https://mono-v.mybluemix.net/demo/end";
                     apiCall.setURL(url);
                     resp = apiCall.demoEnd().get("message").toString();
+                } else if (params[1].equals("5")) {
+                    options = params[1];
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -371,10 +453,10 @@ public class MainActivity extends AppCompatActivity {
                     StringBuffer divider = new StringBuffer();
                     a.append("\nYour Input:\n" + input + "\n");
                     a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
-                    if (ob == null) {
+                    if (resp == null) {
                         speech_output.setText("Please connect to the Internet!");
                     } else {
-                        a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
+                        a.append("\nWatson's Response: \n" + resp + "\n");
                     }
                     a.append("\nDemo ID:\n" + demo_id + "\n");
                     if (automate) {
@@ -414,8 +496,13 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
-                    AsyncTaskRunner a = new AsyncTaskRunner();
-                    a.execute(speech_output.getText().toString(), "1");
+                    if (!ttsGoogle.isEnabled()) {
+                        GoogleTask a1 = new GoogleTask();
+                        a1.execute(speech_output.getText().toString());
+                    } else if (!ttsButton.isEnabled()) {
+                        AsyncTaskRunner a = new AsyncTaskRunner();
+                        a.execute(speech_output.getText().toString(), "1");
+                    }
                 }
 
 //            if (automate && options.equals("1")) {
@@ -434,6 +521,11 @@ public class MainActivity extends AppCompatActivity {
                 } else if (options.equals("3")) {
                     demo_id = resp;
                     apiCall.setID(demo_id); //Set New ID
+                } else if (options.equals("5")) {
+                    if (automate) {
+                        //speechToTextIBM();
+                    }
+                    speech_input.setText(textIBM);
                 }
             }
         }
@@ -461,6 +553,8 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(text[0]);
             if (text[0].equals("0") || text[0].equals("2")) {
                 speech_output.setText(text[1]);
+            } else if (text[0].equals("5")) {
+                speech_input.setText(textIBM);
             }
             //speech1.setEnabled(false);
         }
@@ -492,16 +586,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private SpeechToText initSpeechToTextService() {
         SpeechToText service = new SpeechToText();
-        String username = "e8ed3836-7273-493c-b5e0-f7e1283f61d6";
-        String password = "Nsg0gxPZ0k4m";
+        String username = "cace6a1c-dbb0-4042-ab11-e5ecb9bc36da";
+        String password = "eDhPlNNyr3uX";
         service.setUsernameAndPassword(username, password);
         service.setEndPoint("https://stream.watsonplatform.net/speech-to-text/api");
         return service;
     }
 
     private RecognizeOptions getRecognizeOptions() {
-        Builder a = new Builder(); //Instantiating RecognizeOptions is deprecated
-        a.continuous(true);
+        Builder a = new Builder(); //Instantiating RecognizeOptions is in another sdk
+        a.continuous(false);
         a.contentType(MicrophoneInputStream.CONTENT_TYPE);
         a.model("en-US_BroadbandModel");
         a.interimResults(true);
@@ -509,26 +603,6 @@ public class MainActivity extends AppCompatActivity {
         return a.build();
     }
 
-    private void speechToTextIBM() {
-        speechService.recognizeUsingWebSocket(new MicrophoneInputStream(),
-                getRecognizeOptions(), new BaseRecognizeCallback() {
-                    @Override
-                    public void onTranscription(SpeechResults speechResults) {
-                        String text = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
-                        System.out.println(text);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                    }
-
-                    @Override
-                    public void onDisconnected() {
-                        System.out.println("Done");
-                    }
-
-                });
-    }
 
      /*-----------------------------------------
     Google Speech to Text and Text to Speech
@@ -589,11 +663,72 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+
+    private class TranslationTask extends AsyncTask<String, String, String> {
+
+        @Override protected String doInBackground(String... params) {
+            service.recognizeUsingWebSocket(new MicrophoneInputStream(),
+                    getRecognizeOptions(), new BaseRecognizeCallback() {
+                        @Override
+                        public void onTranscription(SpeechResults speechResults) {
+                            textIBM = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
+                            System.out.println(textIBM);
+                            showMicText(textIBM);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+
+                        @Override
+                        public void onDisconnected() {
+                            System.out.println("Done");
+                        }
+
+                    });
+            return "";
+        }
+    }
+
+    private void showMicText(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override public void run() {
+                speech_input.setText(text);
+            }
+        });
+    }
+
+
+
+    private class GoogleTask extends AsyncTask<String, String, String> {
+
+        @Override protected String doInBackground(String... params) {
+            System.out.println("start google");
+//            t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+//                @Override
+//                public void onInit(int status) {
+//                    if(status != TextToSpeech.ERROR) {
+//                        t1.setLanguage(Locale.US);
+//                    }
+//                }
+//            });
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
+            t1.speak(params[0], TextToSpeech.QUEUE_FLUSH, map);
+            return "";
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+
+    }
+
     public void playMedia3(byte[] buffer) {
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 11000, AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT,
                 buffer.length*2, AudioTrack.MODE_STATIC);
         audioTrack.write(buffer, 0, buffer.length);
-        audioTrack.setNotificationMarkerPosition(10*buffer.length/45); //Tested this number through trial and error for delay... it works the best
+        audioTrack.setNotificationMarkerPosition(10 * buffer.length / 45); //Tested this number through trial and error for delay... it works the best
         audioTrack.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
             @Override
             public void onPeriodicNotification(AudioTrack track) {
@@ -612,6 +747,7 @@ public class MainActivity extends AppCompatActivity {
         audioTrack.play();
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -625,5 +761,6 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionToWriteAccepted ) MainActivity.super.finish();
 
     }
-
 }
+
+

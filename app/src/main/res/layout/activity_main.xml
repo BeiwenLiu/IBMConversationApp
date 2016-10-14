@@ -46,7 +46,7 @@
         android:layout_alignTop="@+id/button_1"
         android:layout_alignRight="@+id/test"
         android:layout_alignEnd="@+id/test"
-        android:layout_above="@+id/button_2" />
+        android:layout_above="@+id/button_2"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,11 +64,11 @@
         android:layout_height="wrap_content"
         android:text="TTS IBM"
         android:id="@+id/tts"
-        android:layout_alignBottom="@+id/button_2"
-        android:layout_toRightOf="@+id/button_2"
-        android:layout_alignRight="@+id/stt"
-        android:layout_alignEnd="@+id/stt"
-        android:layout_below="@+id/stt" />
+        android:layout_alignTop="@+id/button_2"
+        android:layout_alignLeft="@+id/sstIBM"
+        android:layout_alignStart="@+id/sstIBM"
+        android:layout_alignRight="@+id/button_4"
+        android:layout_alignEnd="@+id/button_4" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -128,10 +128,7 @@
         android:gravity="center"
         android:id="@+id/radioGroup"
         android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_4"
-        android:layout_alignEnd="@+id/button_4">
+        android:layout_centerHorizontal="true">
 
 
         <RadioButton
@@ -322,14 +319,25 @@
         android:layout_alignRight="@+id/button_4"
         android:layout_alignEnd="@+id/button_4" />
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Switch"
+        android:id="@+id/switch1"
+        android:checked="false"
+        android:layout_below="@+id/button_3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TTS GOOGLE"
         android:id="@+id/ttsGoogle"
-        android:layout_alignBottom="@+id/tts"
-        android:layout_toRightOf="@+id/stt"
-        android:layout_alignRight="@+id/sstIBM"
-        android:layout_alignEnd="@+id/sstIBM" />
+        android:layout_above="@+id/button_4"
+        android:layout_alignLeft="@+id/button_4"
+        android:layout_alignStart="@+id/button_4"
+        android:layout_alignRight="@+id/stt"
+        android:layout_alignEnd="@+id/stt" />
 
 </RelativeLayout>

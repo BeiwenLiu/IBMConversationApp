@@ -151,7 +151,6 @@ public class APICall {
         JSONObject out = null;
 
         JSONObject cred   = new JSONObject();
-        cred.put("demo_id",id);
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
@@ -171,8 +170,47 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+        setID(out.get("demo_id").toString());
+        for (int i = 1; i < 5; i++) {
+            profileinit(String.valueOf(i));
+        }
         return out;
     }
+
+    public void profileinit(String seatNumber) throws IOException, JSONException
+    {
+        URL url = new URL("https://mono-v.mybluemix.net/demo/profile");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+        JSONObject out = null;
+
+        JSONObject cred   = new JSONObject();
+        cred.put("demo_id",id);
+        cred.put("profile_id","1234");
+        cred.put("seat",seatNumber);
+
+        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        wr.write(cred.toString());
+        wr.flush();
+
+        StringBuilder sb = new StringBuilder();
+        int HttpResult = connection.getResponseCode();
+        if (HttpResult == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            out = new JSONObject(sb.toString());
+        } else {
+            System.out.println(connection.getResponseMessage());
+        }
+    }
+
 
     public JSONObject demoEnd() throws IOException, JSONException
     {
