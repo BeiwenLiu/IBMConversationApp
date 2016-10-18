@@ -8,45 +8,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Record"
-        android:id="@+id/button_1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        android:layout_below="@+id/button_1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/button_2"
-        android:layout_alignRight="@+id/button_1"
-        android:layout_alignEnd="@+id/button_1" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play"
-        android:id="@+id/button_3"
-        android:layout_below="@+id/button_2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_2"
-        android:layout_alignEnd="@+id/button_2" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="SST Google"
         android:id="@+id/stt"
-        android:layout_toRightOf="@+id/button_1"
-        android:layout_alignTop="@+id/button_1"
-        android:layout_alignRight="@+id/test"
-        android:layout_alignEnd="@+id/test"
-        android:layout_above="@+id/button_2"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,17 +27,6 @@
         android:layout_alignRight="@+id/toggleButton"
         android:layout_alignEnd="@+id/toggleButton" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TTS IBM"
-        android:id="@+id/tts"
-        android:layout_alignTop="@+id/button_2"
-        android:layout_alignLeft="@+id/sstIBM"
-        android:layout_alignStart="@+id/sstIBM"
-        android:layout_alignRight="@+id/button_4"
-        android:layout_alignEnd="@+id/button_4" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,20 +37,9 @@
         android:layout_below="@+id/toggleButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/toggleButton"
-        android:layout_alignEnd="@+id/toggleButton"
         android:hint="Input"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Conversation"
-        android:id="@+id/button_4"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/button_3"
-        android:layout_toRightOf="@+id/button_3" />
+        android:layout_alignParentEnd="true" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -101,9 +47,9 @@
         android:text="New ToggleButton"
         android:id="@+id/toggleButton"
         android:checked="false"
-        android:layout_below="@+id/button_4"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/ref"
+        android:layout_alignLeft="@+id/reset"
+        android:layout_alignStart="@+id/reset" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -113,7 +59,6 @@
         android:id="@+id/textView3"
         android:layout_alignTop="@+id/toggleButton"
         android:layout_toLeftOf="@+id/toggleButton"
-        android:layout_toStartOf="@+id/toggleButton"
         android:layout_alignBottom="@+id/toggleButton"
         android:gravity="center"
         android:scrollbars = "vertical"
@@ -189,7 +134,8 @@
         android:layout_below="@+id/linearLayout2"
         android:layout_alignRight="@+id/toggleButton"
         android:layout_alignEnd="@+id/toggleButton"
-        android:background="@drawable/border2">
+        android:background="@drawable/border2"
+        android:layout_above="@+id/log">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -258,7 +204,6 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Driver"
-            android:layout_gravity="left"
             android:background="#FFFFFF"
             android:padding="7dp"
             android:textSize="18sp"
@@ -280,7 +225,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="BackSeat1"
+            android:text="Back Seat1"
             android:background="#FFFFFF"
             android:padding="7dp"
             android:textSize="18sp"
@@ -291,7 +236,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="BackSeat2"
+            android:text="Back Seat2"
             android:background="#FFFFFF"
             android:padding="7dp"
             android:textSize="18sp"
@@ -309,35 +254,84 @@
         android:backgroundTint="#ff0000"
         android:textColor="#ffffff"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SST IBM"
-        android:id="@+id/sstIBM"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/stt"
-        android:layout_alignRight="@+id/button_4"
-        android:layout_alignEnd="@+id/button_4" />
 
-    <Switch
-        android:layout_width="wrap_content"
+
+    <LinearLayout android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="New Switch"
-        android:id="@+id/switch1"
-        android:checked="false"
-        android:layout_below="@+id/button_3"
+        android:orientation="horizontal"
+        android:id="@+id/ref"
+        android:layout_below="@+id/stt"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TTS GOOGL"
+                android:id="@+id/ttsGoogle"
+                android:layout_below="@+id/stt"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/test"
+                android:layout_toLeftOf="@+id/test" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="fill_parent"
+            android:layout_weight="1" android:orientation="vertical">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TTS IBM"
+                android:id="@+id/tts"
+                android:layout_alignTop="@+id/stt"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Like"
+        android:id="@+id/like"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:backgroundTint="#007299"
+        android:textColor="#ffffff"
+        />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dislike"
+        android:id="@+id/dislike"
+        android:layout_below="@+id/radioGroup"
+        android:layout_toRightOf="@+id/like"
+        android:layout_toEndOf="@+id/like"
+        android:backgroundTint="#007299"
+        android:textColor="#ffffff"
+        />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TTS GOOGLE"
-        android:id="@+id/ttsGoogle"
-        android:layout_above="@+id/button_4"
-        android:layout_alignLeft="@+id/button_4"
-        android:layout_alignStart="@+id/button_4"
-        android:layout_alignRight="@+id/stt"
-        android:layout_alignEnd="@+id/stt" />
+        android:text="Log Response"
+        android:id="@+id/log"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="#ff0000"
+        android:textColor="#ffffff"/>
 
 </RelativeLayout>
+
+
