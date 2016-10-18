@@ -8,12 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.content.ActivityNotFoundException;
@@ -52,6 +54,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.ArrayList;
 
@@ -87,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
     boolean IBMtts;
     boolean Googlesst;
     boolean Googletts;
+
+    SeekBar pitch, speed;
+
 
     String seatStringNumber = "100";
 
@@ -138,20 +144,22 @@ public class MainActivity extends AppCompatActivity {
         ttsGoogle = (Button) findViewById(R.id.ttsGoogle);
         like = (Button) findViewById(R.id.like);
         dislike = (Button) findViewById(R.id.dislike);
-        log = (Button) findViewById(R.id.log);
+        //log = (Button) findViewById(R.id.log);
+        pitch = (SeekBar) findViewById(R.id.pitch);
+        speed = (SeekBar) findViewById(R.id.speed);
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
 
-        log.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] array = log_output1.getEditableText().toString().split("\n");
-                for (int i = 0 ; i < array.length; i++) {
-                    System.out.println("Round " + i + " text: " + array[i]);
-                }
-            }
-        });
+//        log.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String[] array = log_output1.getEditableText().toString().split("\n");
+//                for (int i = 0 ; i < array.length; i++) {
+//                    System.out.println("Round " + i + " text: " + array[i]);
+//                }
+//            }
+//        });
 
         log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -197,6 +205,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
                 }
+
+                
             }
         });
 
@@ -402,6 +412,8 @@ public class MainActivity extends AppCompatActivity {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.US);
+                    t1.setPitch((float) (pitch.getProgress() / 10.0));
+                    t1.setSpeechRate((float) (speed.getProgress() / 10.0));
                     t1.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onDone(String utteranceId) {

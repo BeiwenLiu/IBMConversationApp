@@ -8,6 +8,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="test"
+        android:id="@+id/test"
+        android:layout_alignTop="@+id/dislike"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="SST Google"
         android:id="@+id/stt"
         android:layout_alignParentTop="true"
@@ -118,14 +126,6 @@
 
     </RadioGroup>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test"
-        android:id="@+id/test"
-        android:layout_below="@+id/radioGroup"
-        android:layout_centerHorizontal="true" />
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -135,7 +135,7 @@
         android:layout_alignRight="@+id/toggleButton"
         android:layout_alignEnd="@+id/toggleButton"
         android:background="@drawable/border2"
-        android:layout_above="@+id/log">
+        android:layout_above="@+id/reset">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -194,9 +194,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/test"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/border">
+        android:background="@drawable/border"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:id="@+id/textView6"
@@ -248,11 +251,11 @@
         android:layout_height="wrap_content"
         android:text="Reset"
         android:id="@+id/reset"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:backgroundTint="#ff0000"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 
@@ -299,12 +302,11 @@
         android:layout_height="wrap_content"
         android:text="Like"
         android:id="@+id/like"
-        android:layout_below="@+id/radioGroup"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:backgroundTint="#007299"
         android:textColor="#ffffff"
-        />
+        android:layout_alignTop="@+id/reset"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -312,25 +314,77 @@
         android:layout_height="wrap_content"
         android:text="Dislike"
         android:id="@+id/dislike"
-        android:layout_below="@+id/radioGroup"
-        android:layout_toRightOf="@+id/like"
-        android:layout_toEndOf="@+id/like"
         android:backgroundTint="#007299"
         android:textColor="#ffffff"
-        />
+        android:layout_alignTop="@+id/like"
+        android:layout_toRightOf="@+id/like"
+        android:layout_toEndOf="@+id/like" />
 
-    <Button
+    <SeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log Response"
-        android:id="@+id/log"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/pitch"
+        android:max="20"
+        android:progress="10"
+        android:layout_toRightOf="@+id/like"
+        android:layout_below="@+id/ref"
+        android:layout_toLeftOf="@+id/test" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Pitch"
+        android:id="@+id/textView10"
+        android:layout_alignBottom="@+id/pitch"
+        android:layout_toLeftOf="@+id/pitch"
+        android:layout_below="@+id/ref"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:backgroundTint="#ff0000"
-        android:textColor="#ffffff"/>
+        android:layout_alignParentStart="true" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/speed"
+        android:layout_alignRight="@+id/pitch"
+        android:layout_alignEnd="@+id/pitch"
+        android:layout_below="@+id/pitch"
+        android:max="20"
+        android:progress="10"
+        android:layout_toRightOf="@+id/textView10"
+        android:layout_toEndOf="@+id/textView10"
+        android:indeterminate="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Speed"
+        android:id="@+id/textView11"
+        android:layout_toLeftOf="@+id/pitch"
+        android:layout_alignBottom="@+id/speed"
+        android:layout_below="@+id/pitch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Female"
+        android:id="@+id/switch1"
+        android:layout_alignBottom="@+id/speed"
+        android:layout_toRightOf="@+id/pitch"
+        android:layout_toEndOf="@+id/pitch" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText2"
+        android:layout_alignBottom="@+id/test"
+        android:layout_toLeftOf="@+id/test"
+        android:layout_alignTop="@+id/test"
+        android:layout_toRightOf="@+id/dislike"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
 
