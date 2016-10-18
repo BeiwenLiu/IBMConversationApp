@@ -55,8 +55,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.ArrayList;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
@@ -136,10 +138,20 @@ public class MainActivity extends AppCompatActivity {
         ttsGoogle = (Button) findViewById(R.id.ttsGoogle);
         like = (Button) findViewById(R.id.like);
         dislike = (Button) findViewById(R.id.dislike);
-
+        log = (Button) findViewById(R.id.log);
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
+
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] array = log_output1.getEditableText().toString().split("\n");
+                for (int i = 0 ; i < array.length; i++) {
+                    System.out.println("Round " + i + " text: " + array[i]);
+                }
+            }
+        });
 
         log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
