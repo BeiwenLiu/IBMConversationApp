@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Created by MacbookRetina on 10/6/16.
@@ -188,8 +189,8 @@ public class APICall {
 
         JSONObject cred   = new JSONObject();
         cred.put("demo_id",id);
-        cred.put("profile_id","1234");
-        cred.put("seat",seatNumber);
+        cred.put("profile_id", "1234");
+        cred.put("seat", seatNumber);
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
@@ -242,5 +243,43 @@ public class APICall {
             System.out.println(connection.getResponseMessage());
         }
         return out;
+    }
+
+    public String feedback(Map<String,String> input) throws IOException, JSONException
+    {
+        URL url = new URL(request);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+        JSONObject out = null;
+
+        JSONObject cred   = new JSONObject();
+        for (String key : input.keySet()) {
+            System.out.println("key " + key);
+            System.out.println("value " + input.get(key));
+            cred.put(key, input.get(key));
+        }
+        OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        wr.write(cred.toString());
+        wr.flush();
+
+        StringBuilder sb = new StringBuilder();
+        int HttpResult = connection.getResponseCode();
+        if (HttpResult == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            System.out.println("testing");
+            System.out.println("" + sb.toString());
+            out = new JSONObject(sb.toString());
+        } else {
+            System.out.println(connection.getResponseMessage());
+        }
+        return out.toString();
     }
 }

@@ -9,6 +9,7 @@ import android.media.AudioTrack;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.support.annotation.NonNull;
@@ -46,10 +47,13 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.B
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TimeZone;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
     private String demo_id;
 
     boolean confirmed;
+    String previousResponse1 = "Empty";
+    String previousResponse2 = "Empty";
+    String previousResponse3 = "Empty";
+    String previousResponse4 = "Empty";
+    SimpleDateFormat isoFormat;
+    boolean liked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, requestCode);
         }
+
+        isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        isoFormat.setTimeZone(TimeZone.getTimeZone("GMT-4:00"));
 
         service = initSpeechToTextService();
 
@@ -128,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         confirmed = true;
 
         recentLog = new HashMap<>();
+        recentLog.put("device_identifier", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
@@ -235,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    liked = true;
                     confirmed = false;
                     like.setEnabled(false);
                     like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
@@ -301,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    liked = false;
                     confirmed = false;
                     like.setEnabled(false);
                     like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
@@ -318,9 +334,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //New task
-                confirmed = true;
-                confirm.setVisibility(View.INVISIBLE);
-                comment.setVisibility(View.INVISIBLE);
+
+                recentLog.put("remarks", comment.getText().toString());
+                recentLog.put("miscellaneous", null);
+                if (liked) {
+                    recentLog.put("liked","true");
+                } else {
+                    recentLog.put("liked","false");
+                }
+                LogTask runner = new LogTask();
+                runner.execute();
             }
         });
 
@@ -495,6 +518,10 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(automate);
                 System.out.println(options);
                 if (options.equals("2")) { //If 2 is called, textView2 will be populated with these values:
+
+                    String currentDateandTime = isoFormat.format(new Date());
+                    String[] dates = currentDateandTime.split(" ");
+                    System.out.println(currentDateandTime);
                     StringBuffer a = new StringBuffer();
                     StringBuffer divider = new StringBuffer();
                     a.append("\nYour Input:\n" + input + "\n");
@@ -525,25 +552,39 @@ public class MainActivity extends AppCompatActivity {
                         divider.append("_");
                     }
                     a.append("\n" + divider.toString() + "\n");
+                    recentLog.put("user_response", input);
+                    recentLog.put("ending_watson_response", resp);
+                    recentLog.put("date", dates[0]);
+                    recentLog.put("time", dates[1]);
+
+
                     if (seatNumber.equals("1")) {
+                        recentLog.put("starting_watson_response", previousResponse1);
+                        previousResponse1 = resp;
                         if (log_output1.getEditableText() == null) {
                             log_output1.append(a.toString());
                         } else {
                             log_output1.getEditableText().insert(0, a.toString());
                         }
                     } else if (seatNumber.equals("2")) {
+                        recentLog.put("starting_watson_response", previousResponse2);
+                        previousResponse2 = resp;
                         if (log_output2.getEditableText() == null) {
                             log_output2.append(a.toString());
                         } else {
                             log_output2.getEditableText().insert(0, a.toString());
                         }
                     } else if (seatNumber.equals("3")) {
+                        recentLog.put("starting_watson_response", previousResponse3);
+                        previousResponse3 = resp;
                         if (log_output3.getEditableText() == null) {
                             log_output3.append(a.toString());
                         } else {
                             log_output3.getEditableText().insert(0, a.toString());
                         }
                     } else if (seatNumber.equals("4")) {
+                        recentLog.put("starting_watson_response", previousResponse4);
+                        previousResponse4 = resp;
                         if (log_output4.getEditableText() == null) {
                             log_output4.append(a.toString());
                         } else {
@@ -780,17 +821,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class LogTask extends AsyncTask<String, String, String> {
-
+        String resp;
         @Override
         protected String doInBackground(String... params) {
-
-
-        }
-
-        ;
+            apiCall.setURL("https://mono-v-feedback.mybluemix.net");
+            try {
+                resp = apiCall.feedback(recentLog);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return resp;
+        };
 
         @Override
         protected void onPostExecute(String result) {
+            confirmed = true;
+            comment.setText("");
+            confirm.setVisibility(View.INVISIBLE);
+            comment.setVisibility(View.INVISIBLE);
         }
     }
 

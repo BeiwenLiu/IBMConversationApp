@@ -371,6 +371,7 @@
         android:id="@+id/comment"
         android:textColorHint="#007299"
         android:hint="Comment (Optional)"
+        android:singleLine="true"
         android:visibility="invisible"
         android:layout_above="@+id/textView"
         android:layout_below="@+id/radioGroup"
