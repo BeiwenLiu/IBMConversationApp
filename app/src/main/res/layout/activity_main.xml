@@ -29,11 +29,11 @@
         android:layout_height="wrap_content"
         android:text="Response"
         android:id="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editText"
-        android:layout_alignRight="@+id/toggleButton"
-        android:layout_alignEnd="@+id/toggleButton" />
+        android:layout_above="@+id/test"
+        android:layout_alignLeft="@+id/editText"
+        android:layout_alignStart="@+id/editText"
+        android:layout_alignRight="@+id/editText"
+        android:layout_alignEnd="@+id/editText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -42,12 +42,12 @@
         android:maxLines="1"
         android:imeOptions="actionDone"
         android:singleLine="true"
-        android:layout_below="@+id/toggleButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:hint="Input"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/textView"
+        android:layout_alignLeft="@+id/radioGroup"
+        android:layout_alignStart="@+id/radioGroup"
+        android:layout_alignRight="@+id/radioGroup"
+        android:layout_alignEnd="@+id/radioGroup" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:id="@+id/radioGroup"
-        android:layout_below="@+id/textView"
+        android:layout_above="@+id/editText"
         android:layout_centerHorizontal="true">
 
 
@@ -131,11 +131,11 @@
         android:layout_height="fill_parent"
         android:scrollbars="horizontal" android:id="@+id/scrollView2"
         android:fillViewport="false"
-        android:layout_below="@+id/linearLayout2"
-        android:layout_alignRight="@+id/toggleButton"
-        android:layout_alignEnd="@+id/toggleButton"
         android:background="@drawable/border2"
-        android:layout_above="@+id/reset">
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/radioGroup">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -195,11 +195,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/border"
-        android:layout_below="@+id/radioGroup"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/toggleButton">
 
         <TextView
             android:id="@+id/textView6"
@@ -367,24 +365,34 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Female"
-        android:id="@+id/switch1"
-        android:layout_alignBottom="@+id/speed"
-        android:layout_toRightOf="@+id/pitch"
-        android:layout_toEndOf="@+id/pitch" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:layout_alignBottom="@+id/test"
+        android:id="@+id/comment"
+        android:textColorHint="#007299"
+        android:hint="Comment (Optional)"
+        android:visibility="invisible"
+        android:layout_above="@+id/textView"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/textView"
+        android:layout_toStartOf="@+id/textView" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:id="@+id/confirm"
+        android:backgroundTint="#007299"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/textView"
         android:layout_toLeftOf="@+id/test"
-        android:layout_alignTop="@+id/test"
         android:layout_toRightOf="@+id/dislike"
+        android:layout_toEndOf="@+id/dislike"
         android:visibility="invisible"/>
+
 
 </RelativeLayout>
 

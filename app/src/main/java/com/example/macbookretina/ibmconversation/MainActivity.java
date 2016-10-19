@@ -1,6 +1,8 @@
 package com.example.macbookretina.ibmconversation;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -61,12 +63,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log;
+    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
-    EditText speech_input;
+    EditText speech_input, comment;
 
     SpeechToText service;
 
@@ -147,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
         //log = (Button) findViewById(R.id.log);
         pitch = (SeekBar) findViewById(R.id.pitch);
         speed = (SeekBar) findViewById(R.id.speed);
+        comment = (EditText) findViewById(R.id.comment);
+        confirm = (Button) findViewById(R.id.confirm);
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
@@ -218,10 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 if (outputNumber.equals("1") && outputNumber.equals(seatStringNumber)) {
                     if (log_output1.getEditableText() != null) {
                         log_output1.getEditableText().insert(0, "\nLiked\n");
-                        like.setEnabled(false);
-                        //like.setBackgroundColor(0xe5f8ff);
-                        dislike.setEnabled(false);
-                        //dislike.setBackgroundColor(0xe5f8ff);
+
                     } else {
                         flag = true;
                     }
@@ -262,6 +263,12 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    like.setEnabled(false);
+                    like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
+                    dislike.setEnabled(false);
+                    dislike.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
+                    confirm.setVisibility(View.VISIBLE);
+                    comment.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Liked", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -272,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String outputNumber = checkRadioButton();
                 boolean flag = false;
+
                 if (outputNumber.equals("1") && outputNumber.equals(seatStringNumber)) {
                     if (log_output1.getEditableText() != null) {
                         log_output1.getEditableText().insert(0, "\nDisliked\n");
@@ -320,27 +328,25 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    like.setEnabled(false);
+                    like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
+                    dislike.setEnabled(false);
+                    dislike.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
+                    confirm.setVisibility(View.VISIBLE);
+                    comment.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Disliked", Toast.LENGTH_SHORT).show();
                 }
             }
 
         });
 
-
-//        //Conversation Button
-//        speech1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AsyncTaskRunner runner = new AsyncTaskRunner();
-//                runner.execute(speech_input.getText().toString(), "0", checkRadioButton());
-//
-//
-//                play1.setEnabled(true);
-//                record1.setEnabled(true);
-//                stop1.setEnabled(false);
-//                Toast.makeText(getApplicationContext(), "Conversation started", Toast.LENGTH_LONG).show();
-//            }
-//        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //New task
+                confirm.setVisibility(View.INVISIBLE);
+            }
+        });
 
         //Reset Button
         reset.setOnClickListener(new View.OnClickListener() {
@@ -351,60 +357,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        record1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    recorder.start();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                play1.setEnabled(false);
-//                record1.setEnabled(false);
-//                stop1.setEnabled(true);
-//                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//        stop1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                try {
-//                    recorder.stop();
-//                } catch (IllegalStateException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//
-//                stop1.setEnabled(false);
-//                record1.setEnabled(true);
-//                play1.setEnabled(true);
-//
-//                Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-//        play1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
-//                recorder.audioPlay(outputFile);
-//                Toast.makeText(getApplicationContext(), "Playing audio", Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-//        //Text To Speech IBM
-//        ttsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AsyncTaskRunner runner = new AsyncTaskRunner();
-//                runner.execute(speech_output.getText().toString(), "1");
-//            }
-//        });
 
         //Text To Speech Google
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -412,8 +364,6 @@ public class MainActivity extends AppCompatActivity {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.US);
-                    t1.setPitch((float) (pitch.getProgress() / 10.0));
-                    t1.setSpeechRate((float) (speed.getProgress() / 10.0));
                     t1.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onDone(String utteranceId) {
@@ -580,6 +530,8 @@ public class MainActivity extends AppCompatActivity {
             seatStringNumber = seatNumber;
             like.setEnabled(true);
             dislike.setEnabled(true);
+            like.getBackground().clearColorFilter();
+            dislike.getBackground().clearColorFilter();
             // execution of result of Long time consuming operation\
             if (options.equals("0") || options.equals("1") || options.equals("2")) {
                 speech_output.setText(resp);
@@ -651,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
                 if (automate && (options.equals("0") || options.equals("2"))) { //If automated, automatically call Text to Speech at the end of conversation
                     if (!ttsGoogle.isEnabled()) {
                         GoogleTask a1 = new GoogleTask();
-                        a1.execute(speech_output.getText().toString());
+                        a1.execute(speech_output.getText().toString(), Integer.toString(pitch.getProgress()), Integer.toString(speed.getProgress()));
                     } else if (!ttsButton.isEnabled()) {
                         AsyncTaskRunner a = new AsyncTaskRunner();
                         a.execute(speech_output.getText().toString(), "1");
@@ -877,6 +829,8 @@ public class MainActivity extends AppCompatActivity {
 //            });
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
+            t1.setPitch((float) (Integer.parseInt(params[1]) / 10.0));
+            t1.setSpeechRate((float) (Integer.parseInt(params[2]) / 10.0));
             t1.speak(params[0], TextToSpeech.QUEUE_FLUSH, map);
             return "";
         };
