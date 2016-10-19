@@ -41,29 +41,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
-import com.ibm.watson.developer_cloud.http.HttpMediaType;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechModel;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechResults;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechSession;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.RecognizeCallback;
-import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.File;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.Map;
 
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button play1,stop1,record1,speech1,sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm;
+    Map<String, String> recentLog;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
@@ -80,27 +71,16 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     boolean automate;
     private APICall apiCall;
-    private AudioRecordTest recorder;
     private String outputFile = null;
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToWriteAccepted = false;
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
-    private SpeechToText speechService;
     public final int SPEECH_REQUEST_CODE = 123;
-
-    boolean IBMstt;
-    boolean IBMtts;
-    boolean Googlesst;
-    boolean Googletts;
-
     SeekBar pitch, speed;
-
-
     String seatStringNumber = "100";
-
     private String demo_id;
-    private String profile_id;
 
+    boolean confirmed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         scroll = (ScrollView) findViewById(R.id.scrollView2);
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.wav";
 
-        recorder = new AudioRecordTest(outputFile);
         apiCall = new APICall();
 
 
@@ -136,34 +115,23 @@ public class MainActivity extends AppCompatActivity {
         test = (Button) findViewById(R.id.test);
         ttsButton = (Button) findViewById(R.id.tts);
         sttButton = (Button) findViewById(R.id.stt);
-//        record1 = (Button) findViewById(R.id.button_1);
-//        stop1 = (Button) findViewById(R.id.button_2);
-//        play1 = (Button) findViewById(R.id.button_3);
-        //speech1 = (Button) findViewById(R.id.button_4);
         speech_output = (TextView) findViewById(R.id.textView);
         reset = (Button) findViewById(R.id.reset);
-//        sttIBM = (Button) findViewById(R.id.sstIBM);
         ttsGoogle = (Button) findViewById(R.id.ttsGoogle);
         like = (Button) findViewById(R.id.like);
         dislike = (Button) findViewById(R.id.dislike);
-        //log = (Button) findViewById(R.id.log);
         pitch = (SeekBar) findViewById(R.id.pitch);
         speed = (SeekBar) findViewById(R.id.speed);
         comment = (EditText) findViewById(R.id.comment);
         confirm = (Button) findViewById(R.id.confirm);
 
+        confirmed = true;
+
+        recentLog = new HashMap<>();
+
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
 
-//        log.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String[] array = log_output1.getEditableText().toString().split("\n");
-//                for (int i = 0 ; i < array.length; i++) {
-//                    System.out.println("Round " + i + " text: " + array[i]);
-//                }
-//            }
-//        });
 
         log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -200,17 +168,21 @@ public class MainActivity extends AppCompatActivity {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
+                if (confirmed) {
+                    AsyncTaskRunner runner = new AsyncTaskRunner();
 
-                if (speech_input.getText().toString().equals("")) {
-                    if (!sttButton.isEnabled()) {
-                        showGoogleInputDialog();
+                    if (speech_input.getText().toString().equals("")) {
+                        if (!sttButton.isEnabled()) {
+                            showGoogleInputDialog();
+                        }
+                    } else {
+                        runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
                     }
                 } else {
-                    runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                    Toast.makeText(getApplicationContext(), "Please confirm before proceeding!", Toast.LENGTH_SHORT).show();
                 }
 
-                
+
             }
         });
 
@@ -263,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    confirmed = false;
                     like.setEnabled(false);
                     like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
                     dislike.setEnabled(false);
@@ -312,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         flag = true;
                     }
-                } else if (outputNumber.equals("3") && outputNumber.equals(seatStringNumber)) {
+                } else if (outputNumber.equals("4") && outputNumber.equals(seatStringNumber)) {
                     if (log_output4.getEditableText() != null) {
                         log_output4.getEditableText().insert(0, "\n" +
                                 "Disliked\n");
@@ -328,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                 if (flag || !outputNumber.equals(seatStringNumber)) {
                     Toast.makeText(getApplicationContext(), "No Conversation or wrong seat number", Toast.LENGTH_SHORT).show();
                 } else {
+                    confirmed = false;
                     like.setEnabled(false);
                     like.getBackground().setColorFilter(new LightingColorFilter(0x80ffffff, 0x80007299));
                     dislike.setEnabled(false);
@@ -344,7 +318,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //New task
+                confirmed = true;
                 confirm.setVisibility(View.INVISIBLE);
+                comment.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -352,8 +328,12 @@ public class MainActivity extends AppCompatActivity {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AsyncTaskRunner runner = new AsyncTaskRunner();
-                runner.execute("", "4");
+                if (confirmed) {
+                    AsyncTaskRunner runner = new AsyncTaskRunner();
+                    runner.execute("", "4");
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please confirm before proceeding!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -383,15 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//
-//        ttsGoogle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String toSpeak = speech_output.getText().toString();
-//                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-//                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//            }
-//        });
+
 
         //Text to Speech IBM
         ttsButton.setEnabled(true);
@@ -425,24 +397,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-//        //Speech to Text IBM
-//        sttIBM.setEnabled(true);
-//        sttIBM.setBackgroundColor(0x8000796b);
-//        sttIBM.setTextColor(0xffffffff);
-//        sttIBM.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //speechToTextIBM(initSpeechToTextService());
-//                if (!sttButton.isEnabled()) {
-//                    sttButton.setEnabled(true);
-//                    sttButton.setBackgroundColor(0x8000796b);
-//                    sttIBM.setEnabled(false);
-//                    sttIBM.setBackgroundColor(0xff00796b);
-//                }
-//            }
-//        });
-
         //Speech to Text Google
         sttButton.setEnabled(false);
         sttButton.setBackgroundColor(0xff00796b);
@@ -456,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
                     sttButton.setEnabled(false);
                     sttButton.setBackgroundColor(0xff00796b);
                 }
-                //showGoogleInputDialog();
             }
         });
 
@@ -610,9 +563,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-//            if (automate && options.equals("1")) {
-//                showGoogleInputDialog();
-//            }
                 speech_input.setText("");
             } else { //For cases>2
                 if (options.equals("4")) {
@@ -764,47 +714,6 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-
-//    private class TranslationTask extends AsyncTask<String, String, String> {
-//
-//        MicrophoneInputStream input;
-//
-//        @Override protected String doInBackground(String... params) {
-//            service.recognizeUsingWebSocket(input,
-//                    getRecognizeOptions(), new BaseRecognizeCallback() {
-//                        @Override
-//                        public void onTranscription(SpeechResults speechResults) {
-//                            textIBM = speechResults.getResults().get(0).getAlternatives().get(0).getTranscript();
-//                            System.out.println(textIBM);
-//                            showMicText(textIBM);
-//                        }
-//
-//                        @Override
-//                        public void onError(Exception e) {
-//                        }
-//
-//                        @Override
-//                        public void onDisconnected() {
-//                            System.out.println("Done");
-//                            try {
-//                                input.close();
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                    });
-//            return "";
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            // Things to be done before execution of long running operation. For
-//            // example showing ProgessDialog
-//            input = new MicrophoneInputStream();
-//        }
-//    }
-
     private void showMicText(final String text) {
         runOnUiThread(new Runnable() {
             @Override public void run() {
@@ -819,14 +728,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override protected String doInBackground(String... params) {
             System.out.println("start google");
-//            t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-//                @Override
-//                public void onInit(int status) {
-//                    if(status != TextToSpeech.ERROR) {
-//                        t1.setLanguage(Locale.US);
-//                    }
-//                }
-//            });
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
             t1.setPitch((float) (Integer.parseInt(params[1]) / 10.0));
@@ -877,6 +778,22 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionToWriteAccepted ) MainActivity.super.finish();
 
     }
+
+    private class LogTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+
+        }
+
+        ;
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+    }
+
 }
 
 
