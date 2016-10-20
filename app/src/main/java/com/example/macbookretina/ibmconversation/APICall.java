@@ -263,23 +263,15 @@ public class APICall {
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
         wr.flush();
-
+        String answer = null;
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
+        System.out.println(HttpResult);
         if (HttpResult == HttpURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "utf-8"));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            br.close();
-            System.out.println("testing");
-            System.out.println("" + sb.toString());
-            out = new JSONObject(sb.toString());
+            answer = "OK";
         } else {
             System.out.println(connection.getResponseMessage());
         }
-        return out.toString();
+        return answer;
     }
 }

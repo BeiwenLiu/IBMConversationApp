@@ -469,7 +469,8 @@ public class MainActivity extends AppCompatActivity {
                     apiCall.setURL(url);
                     seatNumber = checkRadioButton();
                     ob = apiCall.sendRequest(params[0], seatNumber);
-                    resp = ob.get("transcription").toString();
+                    System.out.println("Object : " + ob);
+                    resp = ob.get("text").toString();
                     System.out.println("Resp:" + resp);
                     input = params[0];
                 } else if (params[1].equals("3")) {
@@ -530,6 +531,7 @@ public class MainActivity extends AppCompatActivity {
                         speech_output.setText("Please connect to the Internet!");
                     } else {
                         a.append("\nWatson's Response: \n" + resp + "\n");
+                        a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
                     }
                     a.append("\nDemo ID:\n" + demo_id + "\n");
                     if (automate) {
@@ -824,7 +826,7 @@ public class MainActivity extends AppCompatActivity {
         String resp;
         @Override
         protected String doInBackground(String... params) {
-            apiCall.setURL("https://mono-v-feedback.mybluemix.net");
+            apiCall.setURL("https://mono-v-feedback.mybluemix.net/feedback");
             try {
                 resp = apiCall.feedback(recentLog);
             } catch (Exception e) {
@@ -835,6 +837,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            if (resp != null) {
+                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Not successful", Toast.LENGTH_SHORT).show();
+            }
             confirmed = true;
             comment.setText("");
             confirm.setVisibility(View.INVISIBLE);
