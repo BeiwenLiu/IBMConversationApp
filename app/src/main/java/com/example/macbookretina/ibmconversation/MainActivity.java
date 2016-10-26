@@ -57,14 +57,15 @@ import java.util.TimeZone;
 
 
 public class MainActivity extends AppCompatActivity {
+    ArrayList<String> logEmail = new ArrayList<>();
+    StringBuffer universalString = new StringBuffer();
     Map<String, String> recentLog;
-    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input, comment;
-
     SpeechToText service;
 
     String textIBM;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         speed = (SeekBar) findViewById(R.id.speed);
         comment = (EditText) findViewById(R.id.comment);
         confirm = (Button) findViewById(R.id.confirm);
+        email = (Button) findViewById(R.id.email);
 
         confirmed = true;
 
@@ -335,11 +337,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //New task
 
+                universalString.append("\n" + comment.getText().toString() + "\n");
                 recentLog.put("remarks", comment.getText().toString());
                 recentLog.put("miscellaneous", null);
                 if (liked) {
+                    universalString.append("\n" + "liked: true" + "\n");
                     recentLog.put("liked","true");
                 } else {
+                    universalString.append("\n" + "liked: false" + "\n");
                     recentLog.put("liked","false");
                 }
                 LogTask runner = new LogTask();
@@ -436,6 +441,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmail();
+            }
+        });
+
     }
 
 
@@ -454,6 +466,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             publishProgress(params[1], "Fetching Watson's Response...");
             try {
+                universalString.append("____________________________________");
                 if (params[1].equals("0")) { //Conversation call
                     options = params[1];
                     apiCall.setURL("https://mono-v.mybluemix.net/conversation");
@@ -525,28 +538,37 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(currentDateandTime);
                     StringBuffer a = new StringBuffer();
                     StringBuffer divider = new StringBuffer();
+                    universalString.append("\nYour Input:\n" + input + "\n");
+                    universalString.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
                     a.append("\nYour Input:\n" + input + "\n");
                     a.append("\nYour Selected Seat Number:\n" + seatNumber + "\n");
                     if (resp == null) {
                         speech_output.setText("Please connect to the Internet!");
                     } else {
+                        universalString.append("\nWatson's Response: \n" + resp + "\n");
+                        universalString.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
                         a.append("\nWatson's Response: \n" + resp + "\n");
                         a.append("\nWatson's Raw Response: \n" + ob.toString() + "\n");
                     }
+                    universalString.append("\nDemo ID:\n" + demo_id + "\n");
                     a.append("\nDemo ID:\n" + demo_id + "\n");
                     if (automate) {
                         a.append("\nAutomate on - Watson will process this input:\n" + resp + "\n");
                     }
 
                     if (!sttButton.isEnabled()) {
+                        universalString.append("\nGoogle Speech To Text is used\n");
                         a.append("\nGoogle Speech To Text is used\n");
                     } else if (!sttIBM.isEnabled()) {
+                        universalString.append("\nIBM Speech To Text is used\n");
                         a.append("\nIBM Speech To Text is used\n");
                     }
 
                     if (!ttsButton.isEnabled()) {
+                        universalString.append("\nIBM Text to Speech is used\n");
                         a.append("\nIBM Text to Speech is used\n");
                     } else if (!ttsGoogle.isEnabled()) {
+                        universalString.append("\n" + "Google Text to Speech is used\n");
                         a.append("\nGoogle Text to Speech is used\n");
                     }
                     for (int i = 0; i < width; i++) {
@@ -556,6 +578,8 @@ public class MainActivity extends AppCompatActivity {
                     a.append("\n" + divider.toString() + "\n");
                     recentLog.put("user_response", input);
                     recentLog.put("ending_watson_response", resp);
+                    universalString.append("\n" + dates[0] + "\n");
+                    universalString.append("\n" + dates[1] + "\n");
                     recentLog.put("date", dates[0]);
                     recentLog.put("time", dates[1]);
 
@@ -711,7 +735,9 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,500000);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                "Voice recognition Demo...");
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(10000));
         try {
             startActivityForResult(intent, SPEECH_REQUEST_CODE);
         } catch (ActivityNotFoundException a) {
@@ -846,6 +872,18 @@ public class MainActivity extends AppCompatActivity {
             comment.setText("");
             confirm.setVisibility(View.INVISIBLE);
             comment.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void sendEmail() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"beiwenl@gmail.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "Log");
+        i.putExtra(Intent.EXTRA_TEXT   , universalString.toString());
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
         }
     }
 

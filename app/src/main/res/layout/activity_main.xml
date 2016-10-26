@@ -394,6 +394,17 @@
         android:layout_toEndOf="@+id/dislike"
         android:visibility="invisible"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:id="@+id/email"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/reset"
+        android:backgroundTint="#ff00796b"
+        android:textColor="#ffffff">
+    </Button>
+
 
 </RelativeLayout>
 
