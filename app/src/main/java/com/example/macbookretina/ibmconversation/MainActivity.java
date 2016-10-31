@@ -9,11 +9,15 @@ import android.media.AudioTrack;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -37,6 +41,11 @@ import android.widget.RadioGroup;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 import android.speech.tts.TextToSpeech;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +55,9 @@ import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
 import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions.Builder;
 import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,18 +66,94 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<String> logEmail = new ArrayList<>();
+    protected static final int MSG_PRINT = 0x100;
+    protected static final int MSG_STARTSAMPLE = 0x101;
+    protected static final int MSG_ENDSAMPLE = 0x102;
+    protected static final int MSG_RECORDING = 0x103;
+    public native void buildList(String appDir);
+
+    public native void buildGrammar(String appDir);
+
+    public native void buildIncremental(String appDir);
+
+    public native void recogList(String appDir);
+
+    public native void recogGrammar(String appDir);
+
+    public native long phrasespotInit(String appDir);
+
+    public native String phrasespotPipe(long p, ByteBuffer b, long rate);
+
+    public native void phrasespotClose(long p);
+
+    public native long recogPipeInit(String appDir);
+
+    public native long recogPipePipe(long p, ByteBuffer b, long rate, String appDir);
+
+    public native void recogPipeClose(long p);
+
+    public native long recogSeqInit(String appDir);
+
+    public native long recogSeqPhrasespotPipe(long p, ByteBuffer b, long rate, String appDir);
+
+    public native long recogSeqGrammarPipe(long p, ByteBuffer b, long rate, String appDir);
+
+    public native void recogSeqClose(long p);
+
+    public native void SpeakerVerification(String appDir, Record audio);
+
+    public native long speakerIdentificationInit(short numUsers, short numEnroll, String appDir);
+
+    public native short speakerIdentificationPipe(long p, ByteBuffer b, long rate);
+
+    public native short speakerIdentificationResult(long p, short idx, short numUsers,
+                                                    short numEnroll, short numLoop);
+
+    public native void speakerIdentificationClose(long p);
+
+    public native void udtsid(String appDir, Record audio);
+
+    public native void recogEnroll(String appDir, Record audio);
+
+    static void sendMsg(int id, String s) {
+        Message m = new Message();
+        m.what = id;
+        if (s != null) {
+            Bundle b = new Bundle();
+            b.putString("txt", s);
+            m.setData(b);
+        }
+        MainActivity.myHandler.sendMessage(m);
+    }
+
+    static {
+        System.loadLibrary("TrulyHandsfreeJNI"); // load native SDK lib
+    }
+
+    public void asyncPrint(String s) {
+        sendMsg(MainActivity.MSG_PRINT, s);
+    }
+
+    protected static Record audioInstance = null;
+    protected static Thread athread = null;
+    private Thread mRunSampleThread = null;
+
+    ArrayList<String> logEmail = new ArrayList();
     StringBuffer universalString = new StringBuffer();
     Map<String, String> recentLog;
-    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email,newActivity;
+    static Button recordButton;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
     ToggleButton toggle;
     RadioButton seatButton;
     EditText speech_input, comment;
     SpeechToText service;
+    private static final String TAG = "MainActivity";
 
     String textIBM;
 
@@ -101,9 +188,35 @@ public class MainActivity extends AppCompatActivity {
 
         // Required for permissions
         int requestCode = 200;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissions, requestCode);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            requestPermissions(permissions, requestCode);
+//        }
+
+        AssetCache assets = new AssetCache(this, "");
+        try {
+            for (String file : new String[] { "nn_en_us_mfcc_16k_15_250_v5.1.1.raw",
+                    "lts_en_us_9.5.2b.raw", "names.txt", "john_smith_16khz.wav",
+                    "twelve_oclock_16khz.audio", "hbg_antiData_v6_0.raw", "hbg_genderModel.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_am.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_3.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_5.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_7.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_9.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_11.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_13.raw",
+                    "sensory_demo_hbg_en_us_sfs_delivery04_pruned_search_15.raw",
+                    "phonemeSearch_1_5.raw", "svsid_1_1.raw",
+                    "HBG_enUS_taskData_v2_2.raw", "UDT_enUS_taskData_v12_0_5.raw"
+            }) {
+                Log.i(TAG, "caching " + assets.getPath(file));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        audioInstance = new Record();
+        athread = new Thread(audioInstance);
+        athread.start();
 
         isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         isoFormat.setTimeZone(TimeZone.getTimeZone("GMT-4:00"));
@@ -139,14 +252,45 @@ public class MainActivity extends AppCompatActivity {
         comment = (EditText) findViewById(R.id.comment);
         confirm = (Button) findViewById(R.id.confirm);
         email = (Button) findViewById(R.id.email);
+        newActivity = (Button) findViewById(R.id.newActivity);
+        recordButton = (Button) findViewById(R.id.startRecord);
 
         confirmed = true;
 
-        recentLog = new HashMap<>();
+        recentLog = new HashMap();
         recentLog.put("device_identifier", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
+
+        //Use for testing sensory
+//        newActivity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), Console.class);
+//                intent.putExtra(EXTRA_MESSAGE, "hey");
+//                startActivityForResult(intent, 0);
+//            }
+//        });
+
+        //Activate sensory keyword detection
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                view.setEnabled(false);
+                if (audioInstance.isRecording()) {
+                    audioInstance.stopRecording();
+                    if (mRunSampleThread != null)
+                        mRunSampleThread.interrupt();
+                } else {
+                    mRunSampleThread = new Thread(new Runnable() {
+                        public void run() {
+                            runSample();
+                        }
+                    });
+                    mRunSampleThread.start();
+                }
+            }
+        });
 
 
         log_output1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -202,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Like will automatically populate log_output1 with a like
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,6 +409,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Dislike will automatically populate log_output1 with dislike
         dislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -332,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        //Executes new Async task that communicates with logging API
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -452,6 +599,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    // Main API handler
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
 
         private String url;
@@ -783,6 +931,7 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+
     private void showMicText(final String text) {
         runOnUiThread(new Runnable() {
             @Override public void run() {
@@ -793,6 +942,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //Google text to speech
     private class GoogleTask extends AsyncTask<String, String, String> {
 
         @Override protected String doInBackground(String... params) {
@@ -811,6 +961,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Playback audio
     public void playMedia3(byte[] buffer) {
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 11000, AudioFormat.CHANNEL_OUT_STEREO,AudioFormat.ENCODING_PCM_16BIT,
                 buffer.length*2, AudioTrack.MODE_STATIC);
@@ -834,19 +985,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 200:
-                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToRecordAccepted ) MainActivity.super.finish();
-        if (!permissionToWriteAccepted ) MainActivity.super.finish();
-
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        switch (requestCode){
+//            case 200:
+//                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+//                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+//                break;
+//        }
+//        if (!permissionToRecordAccepted ) MainActivity.super.finish();
+//        if (!permissionToWriteAccepted ) MainActivity.super.finish();
+//
+//    }
 
     private class LogTask extends AsyncTask<String, String, String> {
         String resp;
@@ -886,6 +1037,73 @@ public class MainActivity extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException ex) {
         }
     }
+
+
+    public void sendMessage(View view) {
+        Intent intent = new Intent(this, Console.class);
+        String message = "hi";
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    //This function handles the sensory keyword activation
+    public void runSample() {
+        File dirFiles = getFilesDir();
+        String directory = getFilesDir().toString() + "/";
+        long context = phrasespotInit(directory);
+
+        boolean audioStarted = false;
+        if (context != 0) {
+            audioInstance.startRecording();
+            while (audioInstance.isRecording()) {
+                ByteBuffer buf = null;
+                try {
+                    buf = audioInstance.getBuffer();
+                    if (!audioStarted) {
+                        sendMsg(Console.MSG_RECORDING, null);
+                        audioStarted = true;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    // WorkerThread can be interrupted.
+                    // throw new
+                    // IllegalStateException("WorkerThread: getBuffer failed");
+                }
+                if (phrasespotPipe(context, buf, audioInstance.samplerate) != null) {
+                    audioInstance.stopRecording(); // success
+                    showGoogleInputDialog();
+                    System.out.println("done");
+                    break;
+                }
+            }
+            phrasespotClose(context);
+        }
+        if (audioInstance.isRecording()) audioInstance.stopRecording();
+        sendMsg(Console.MSG_ENDSAMPLE, null);
+
+    }
+
+    //This function handles the GUI
+    final static Handler myHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MainActivity.MSG_PRINT:
+                    break;
+                case MainActivity.MSG_RECORDING:
+                    recordButton.setEnabled(true);
+                    recordButton.setText("Stop");
+                    break;
+                case MainActivity.MSG_STARTSAMPLE:
+                    recordButton.setEnabled(false);
+                    break;
+                case MainActivity.MSG_ENDSAMPLE:
+                    recordButton.setEnabled(true);
+                    recordButton.setText("Run Sample");
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
 }
 

@@ -405,6 +405,22 @@
         android:textColor="#ffffff">
     </Button>
 
+    <Button
+        android:text="New"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignStart="@+id/email"
+        android:id="@+id/newActivity" />
+
+    <Button
+        android:text="record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radioGroup"
+        android:layout_toStartOf="@+id/newActivity"
+        android:id="@+id/startRecord" />
+
 
 </RelativeLayout>
 

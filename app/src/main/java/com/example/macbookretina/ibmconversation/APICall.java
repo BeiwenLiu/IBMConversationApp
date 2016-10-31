@@ -39,16 +39,22 @@ public class APICall {
         JSONObject out = null;
 
         JSONObject cred   = new JSONObject();
-        cred.put("text",input);
+        cred.put("text", input);
         cred.put("seat", Integer.parseInt(seatNumber));
-        cred.put("demo_id",id);
+        cred.put("demo_id", id);
+        System.out.println("testtttnggg12525");
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
+        System.out.println("1f");
         wr.write(cred.toString());
+        System.out.println("2f");
         wr.flush();
+        System.out.println("3f");
 
         StringBuilder sb = new StringBuilder();
+
         int HttpResult = connection.getResponseCode();
+        System.out.println(HttpResult);
         if (HttpResult == HttpURLConnection.HTTP_OK) {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(connection.getInputStream(), "utf-8"));
