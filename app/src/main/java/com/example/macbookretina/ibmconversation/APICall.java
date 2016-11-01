@@ -31,6 +31,7 @@ public class APICall {
 
     public JSONObject sendRequest(String input, String seatNumber) throws IOException, JSONException
     {
+        System.setProperty("http.keepAlive", "false");
         URL url = new URL(request);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -42,19 +43,11 @@ public class APICall {
         cred.put("text", input);
         cred.put("seat", Integer.parseInt(seatNumber));
         cred.put("demo_id", id);
-        System.out.println("testtttnggg12525");
-
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
-        System.out.println("1f");
         wr.write(cred.toString());
-        System.out.println("2f");
-        wr.flush();
-        System.out.println("3f");
-
+        wr.close();
         StringBuilder sb = new StringBuilder();
-
         int HttpResult = connection.getResponseCode();
-        System.out.println(HttpResult);
         if (HttpResult == HttpURLConnection.HTTP_OK) {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(connection.getInputStream(), "utf-8"));
@@ -68,6 +61,9 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+        System.out.println(out);
+        connection.disconnect();
+        wr.close();
         return out;
     }
 
@@ -87,8 +83,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
-
+        wr.close();
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
         if (HttpResult == HttpURLConnection.HTTP_OK) {
@@ -104,6 +99,8 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+
+        connection.disconnect();
         return out;
     }
 
@@ -121,7 +118,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
+        wr.close();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -145,6 +142,8 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+
+        connection.disconnect();
         return buffer;
     }
 
@@ -161,7 +160,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
+        wr.close();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -181,6 +180,8 @@ public class APICall {
         for (int i = 1; i < 5; i++) {
             profileinit(String.valueOf(i));
         }
+
+        connection.disconnect();
         return out;
     }
 
@@ -200,7 +201,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
+        wr.close();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -216,6 +217,8 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+
+        connection.disconnect();
     }
 
 
@@ -232,7 +235,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
+        wr.close();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -248,6 +251,9 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+
+
+        connection.disconnect();
         return out;
     }
 
@@ -268,7 +274,7 @@ public class APICall {
         }
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.flush();
+        wr.close();
         String answer = null;
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -278,6 +284,8 @@ public class APICall {
         } else {
             System.out.println(connection.getResponseMessage());
         }
+
+        connection.disconnect();
         return answer;
     }
 }

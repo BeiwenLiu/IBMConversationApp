@@ -188,9 +188,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Required for permissions
         int requestCode = 200;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            requestPermissions(permissions, requestCode);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, requestCode);
+        }
 
         AssetCache assets = new AssetCache(this, "");
         try {
@@ -213,10 +213,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        audioInstance = new Record();
-        athread = new Thread(audioInstance);
-        athread.start();
 
         isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         isoFormat.setTimeZone(TimeZone.getTimeZone("GMT-4:00"));
@@ -276,6 +272,9 @@ public class MainActivity extends AppCompatActivity {
         //Activate sensory keyword detection
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                audioInstance = new Record();
+                athread = new Thread(audioInstance);
+                athread.start();
                 view.setEnabled(false);
                 if (audioInstance.isRecording()) {
                     audioInstance.stopRecording();
@@ -985,19 +984,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode){
-//            case 200:
-//                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-//                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-//                break;
-//        }
-//        if (!permissionToRecordAccepted ) MainActivity.super.finish();
-//        if (!permissionToWriteAccepted ) MainActivity.super.finish();
-//
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 200:
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                permissionToWriteAccepted  = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionToRecordAccepted ) MainActivity.super.finish();
+        if (!permissionToWriteAccepted ) MainActivity.super.finish();
+
+    }
 
     private class LogTask extends AsyncTask<String, String, String> {
         String resp;
