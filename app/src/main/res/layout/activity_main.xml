@@ -405,7 +405,16 @@
         android:textColor="#ffffff">
     </Button>
 
-    <Button
+    <TextView
+        android:text="MultiThread"
+        android:id="@+id/multithreadtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scrollView2"
+        android:layout_alignStart="@+id/email"/>
+
+
+    <ToggleButton
         android:text="MultiThread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

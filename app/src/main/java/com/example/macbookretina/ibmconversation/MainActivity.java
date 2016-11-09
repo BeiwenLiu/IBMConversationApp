@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> logEmail = new ArrayList();
     StringBuffer universalString = new StringBuffer();
     Map<String, String> recentLog;
-    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email,newActivity;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email;
     static Button recordButton;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
-    ToggleButton toggle;
+    ToggleButton toggle,newActivity;
     RadioButton seatButton;
     EditText speech_input, comment;
     SpeechToText service;
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
     String previousResponse4 = "Empty";
     SimpleDateFormat isoFormat;
     boolean liked;
+    boolean multiThreadCheck; //If enabled, will send request across all seats
 
 
 
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         comment = (EditText) findViewById(R.id.comment);
         confirm = (Button) findViewById(R.id.confirm);
         email = (Button) findViewById(R.id.email);
-        newActivity = (Button) findViewById(R.id.newActivity);
+        newActivity = (ToggleButton) findViewById(R.id.newActivity);
         recordButton = (Button) findViewById(R.id.startRecord);
 
         confirmed = true;
@@ -271,14 +272,25 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        newActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                speech_output.setText("");
-                new ParallelTask1().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                new ParallelTask2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                new ParallelTask3().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        newActivity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                speech_output.setText("");
+//                new ParallelTask1().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                new ParallelTask2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                new ParallelTask3().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//            }
+//        });
+
+
+        newActivity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    multiThreadCheck = true;
+                } else {
+                    multiThreadCheck = false;
+                }
             }
         });
 
@@ -351,7 +363,17 @@ public class MainActivity extends AppCompatActivity {
                             showGoogleInputDialog();
                         }
                     } else {
-                        runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                        if (multiThreadCheck) {
+                            speech_output.setText("Finish parallel pasks in this order: ");
+                            String tempInput = speech_input.getText().toString();
+                            new ParallelTask1().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask3().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                        } else {
+                            runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                        }
+
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Please confirm before proceeding!", Toast.LENGTH_SHORT).show();
@@ -924,7 +946,16 @@ public class MainActivity extends AppCompatActivity {
                     speech_input.setText(result.get(0));
                     if (automate) {
                         AsyncTaskRunner runner = new AsyncTaskRunner();
-                        runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                        if (multiThreadCheck) {
+                            speech_output.setText("Finish parallel pasks in this order: ");
+                            String tempInput = speech_input.getText().toString();
+                            new ParallelTask1().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask3().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                            new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempInput);
+                        } else {
+                            runner.execute(speech_input.getText().toString(), "2", checkRadioButton());
+                        }
 
                     }
                 }
@@ -1126,13 +1157,15 @@ public class MainActivity extends AppCompatActivity {
         String resp;
         String url;
         JSONObject ob;
+        String input;
         @Override
         protected String doInBackground(String... params) {
             url = "https://mono-v.mybluemix.net/conversation";
+            input = params[0];
             apiCall.setURL(url);
             try {
-                ob = apiCall.sendRequest("hi", "1");
-                resp = ob.get("text").toString();
+                ob = apiCall.sendRequest(params[0], "1");
+                resp = ob.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1145,7 +1178,15 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             StringBuffer a = new StringBuffer();
             a.append("\n");
+            a.append("Your Input: " + input);
+            a.append("\n");
+            a.append("\nWatson Raw Response\n");
             a.append(resp);
+            a.append("\n");
+            for (int i = 0; i < width; i++) {
+
+                a.append("_");
+            }
             a.append("\n");
             if (log_output1.getEditableText() == null) {
                 log_output1.append(a.toString());
@@ -1154,6 +1195,15 @@ public class MainActivity extends AppCompatActivity {
             }
             speech_output.append("Task1 ");
             System.out.println("done1");
+            if (automate) { //If automated, automatically call Text to Speech at the end of conversation
+                if (!ttsGoogle.isEnabled()) {
+                    GoogleTask a1 = new GoogleTask();
+                    a1.execute(speech_output.getText().toString(), Integer.toString(pitch.getProgress()), Integer.toString(speed.getProgress()));
+                } else if (!ttsButton.isEnabled()) {
+                    AsyncTaskRunner a2 = new AsyncTaskRunner();
+                    a2.execute(speech_output.getText().toString(), "1");
+                }
+            }
         }
     }
 
@@ -1161,13 +1211,15 @@ public class MainActivity extends AppCompatActivity {
         String resp;
         String url;
         JSONObject ob;
+        String input;
         @Override
         protected String doInBackground(String... params) {
             url = "https://mono-v.mybluemix.net/conversation";
             apiCall.setURL(url);
+            input = params[0];
             try {
-                ob = apiCall.sendRequest("hi", "1");
-                resp = ob.get("text").toString();
+                ob = apiCall.sendRequest(params[0], "2");
+                resp = ob.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1180,7 +1232,15 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             StringBuffer a = new StringBuffer();
             a.append("\n");
+            a.append("Your Input: " + input);
+            a.append("\n");
+            a.append("\nWatson Raw Response\n");
             a.append(resp);
+            a.append("\n");
+            for (int i = 0; i < width; i++) {
+
+                a.append("_");
+            }
             a.append("\n");
             if (log_output2.getEditableText() == null) {
                 log_output2.append(a.toString());
@@ -1189,6 +1249,15 @@ public class MainActivity extends AppCompatActivity {
             }
             speech_output.append("Task2 ");
             System.out.println("done2");
+            if (automate) { //If automated, automatically call Text to Speech at the end of conversation
+                if (!ttsGoogle.isEnabled()) {
+                    GoogleTask a1 = new GoogleTask();
+                    a1.execute(speech_output.getText().toString(), Integer.toString(pitch.getProgress()), Integer.toString(speed.getProgress()));
+                } else if (!ttsButton.isEnabled()) {
+                    AsyncTaskRunner a2 = new AsyncTaskRunner();
+                    a2.execute(speech_output.getText().toString(), "1");
+                }
+            }
         }
     }
 
@@ -1196,13 +1265,15 @@ public class MainActivity extends AppCompatActivity {
         String resp;
         String url;
         JSONObject ob;
+        String input;
         @Override
         protected String doInBackground(String... params) {
             url = "https://mono-v.mybluemix.net/conversation";
             apiCall.setURL(url);
+            input = params[0];
             try {
-                ob = apiCall.sendRequest("hi", "1");
-                resp = ob.get("text").toString();
+                ob = apiCall.sendRequest(params[0], "3");
+                resp = ob.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1215,7 +1286,15 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             StringBuffer a = new StringBuffer();
             a.append("\n");
+            a.append("Your Input: " + input);
+            a.append("\n");
+            a.append("\nWatson Raw Response\n");
             a.append(resp);
+            a.append("\n");
+            for (int i = 0; i < width; i++) {
+
+                a.append("_");
+            }
             a.append("\n");
             if (log_output3.getEditableText() == null) {
                 log_output3.append(a.toString());
@@ -1224,6 +1303,15 @@ public class MainActivity extends AppCompatActivity {
             }
             speech_output.append("Task3 ");
             System.out.println("done3");
+            if (automate) { //If automated, automatically call Text to Speech at the end of conversation
+                if (!ttsGoogle.isEnabled()) {
+                    GoogleTask a1 = new GoogleTask();
+                    a1.execute(speech_output.getText().toString(), Integer.toString(pitch.getProgress()), Integer.toString(speed.getProgress()));
+                } else if (!ttsButton.isEnabled()) {
+                    AsyncTaskRunner a2 = new AsyncTaskRunner();
+                    a2.execute(speech_output.getText().toString(), "1");
+                }
+            }
         }
     }
 
@@ -1231,13 +1319,15 @@ public class MainActivity extends AppCompatActivity {
         String resp;
         String url;
         JSONObject ob;
+        String input;
         @Override
         protected String doInBackground(String... params) {
             url = "https://mono-v.mybluemix.net/conversation";
             apiCall.setURL(url);
+            input = params[0];
             try {
-                ob = apiCall.sendRequest("hi", "1");
-                resp = ob.get("text").toString();
+                ob = apiCall.sendRequest(params[0], "4");
+                resp = ob.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1250,7 +1340,16 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             StringBuffer a = new StringBuffer();
             a.append("\n");
+            a.append("Your Input: " + input);
+            a.append("\n");
+            a.append("\nWatson Raw Response\n");
             a.append(resp);
+            a.append("\n");
+
+            for (int i = 0; i < width; i++) {
+
+                a.append("_");
+            }
             a.append("\n");
             if (log_output4.getEditableText() == null) {
                 log_output4.append(a.toString());
@@ -1259,6 +1358,16 @@ public class MainActivity extends AppCompatActivity {
             }
             speech_output.append("Task4 ");
             System.out.println("done4");
+
+            if (automate) { //If automated, automatically call Text to Speech at the end of conversation
+                if (!ttsGoogle.isEnabled()) {
+                    GoogleTask a1 = new GoogleTask();
+                    a1.execute(speech_output.getText().toString(), Integer.toString(pitch.getProgress()), Integer.toString(speed.getProgress()));
+                } else if (!ttsButton.isEnabled()) {
+                    AsyncTaskRunner a2 = new AsyncTaskRunner();
+                    a2.execute(speech_output.getText().toString(), "1");
+                }
+            }
         }
     }
 
