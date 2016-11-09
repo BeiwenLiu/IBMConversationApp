@@ -406,20 +406,24 @@
     </Button>
 
     <Button
-        android:text="New"
+        android:text="MultiThread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/radioGroup"
         android:layout_alignStart="@+id/email"
-        android:id="@+id/newActivity" />
+        android:id="@+id/newActivity"
+        android:backgroundTint="#000000"
+        android:textColor="#ffffff"/>
 
     <Button
-        android:text="record"
+        android:text="Start Keyword Detection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/radioGroup"
         android:layout_toStartOf="@+id/newActivity"
-        android:id="@+id/startRecord" />
+        android:id="@+id/startRecord"
+        android:backgroundTint="#ff00796b"
+        android:textColor="#ffffff"/>
 
 
 </RelativeLayout>

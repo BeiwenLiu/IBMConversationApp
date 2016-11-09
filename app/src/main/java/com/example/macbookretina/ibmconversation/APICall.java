@@ -21,6 +21,11 @@ import java.util.Map;
 public class APICall {
     String request;
     String id;
+
+    public String getID() {
+        return id;
+    }
+
     public void setURL(String url) {
         this.request = url;
     }
@@ -160,7 +165,7 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.close();
+        wr.flush();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
@@ -181,7 +186,6 @@ public class APICall {
             profileinit(String.valueOf(i));
         }
 
-        connection.disconnect();
         return out;
     }
 
@@ -201,24 +205,16 @@ public class APICall {
 
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
-        wr.close();
+        wr.flush();
 
         StringBuilder sb = new StringBuilder();
         int HttpResult = connection.getResponseCode();
         if (HttpResult == HttpURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "utf-8"));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            br.close();
-            out = new JSONObject(sb.toString());
+            System.out.println("done");
         } else {
             System.out.println(connection.getResponseMessage());
         }
 
-        connection.disconnect();
     }
 
 

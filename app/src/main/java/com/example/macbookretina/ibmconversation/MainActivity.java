@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     String textIBM;
 
     TextToSpeech t1;
-
+    boolean startThread = false;
     int width;
     private RadioGroup radioGroup;
     boolean automate;
@@ -179,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
     String previousResponse4 = "Empty";
     SimpleDateFormat isoFormat;
     boolean liked;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
 
         apiCall = new APICall();
 
-
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
         log_output1 = (TextView) findViewById(R.id.textView1);
@@ -259,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
         AsyncTaskRunner demoinit = new AsyncTaskRunner();
         demoinit.execute("", "3");
 
+
         //Use for testing sensory
 //        newActivity.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -269,12 +271,26 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+        newActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speech_output.setText("");
+                new ParallelTask1().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new ParallelTask2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new ParallelTask3().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
         //Activate sensory keyword detection
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                audioInstance = new Record();
-                athread = new Thread(audioInstance);
-                athread.start();
+                if (!startThread) {
+                    audioInstance = new Record();
+                    athread = new Thread(audioInstance);
+                    athread.start();
+                    startThread = true;
+                }
                 view.setEnabled(false);
                 if (audioInstance.isRecording()) {
                     audioInstance.stopRecording();
@@ -340,8 +356,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Please confirm before proceeding!", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -790,6 +804,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (options.equals("3")) {
                     demo_id = resp;
                     apiCall.setID(demo_id); //Set New ID
+                    speech_output.setText("Demo init success: " + apiCall.getID());
+
                 } else if (options.equals("5")) {
                     if (automate) {
                         //speechToTextIBM();
@@ -824,6 +840,8 @@ public class MainActivity extends AppCompatActivity {
                 speech_output.setText(text[1]);
             } else if (text[0].equals("5")) {
                 speech_input.setText(textIBM);
+            } else if (text[0].equals("3")) {
+                speech_output.setText("Initializing demo ID... Please wait");
             }
             //speech1.setEnabled(false);
         }
@@ -1097,12 +1115,152 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case MainActivity.MSG_ENDSAMPLE:
                     recordButton.setEnabled(true);
-                    recordButton.setText("Run Sample");
+                    recordButton.setText("Start Keyword Detection");
                     break;
             }
             super.handleMessage(msg);
         }
     };
+
+    private class ParallelTask1 extends AsyncTask<String, String, String> {
+        String resp;
+        String url;
+        JSONObject ob;
+        @Override
+        protected String doInBackground(String... params) {
+            url = "https://mono-v.mybluemix.net/conversation";
+            apiCall.setURL(url);
+            try {
+                ob = apiCall.sendRequest("hi", "1");
+                resp = ob.get("text").toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Object : " + ob);
+            System.out.println("Resp:" + resp);
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            StringBuffer a = new StringBuffer();
+            a.append("\n");
+            a.append(resp);
+            a.append("\n");
+            if (log_output1.getEditableText() == null) {
+                log_output1.append(a.toString());
+            } else {
+                log_output1.getEditableText().insert(0, a.toString());
+            }
+            speech_output.append("Task1 ");
+            System.out.println("done1");
+        }
+    }
+
+    private class ParallelTask2 extends AsyncTask<String, String, String> {
+        String resp;
+        String url;
+        JSONObject ob;
+        @Override
+        protected String doInBackground(String... params) {
+            url = "https://mono-v.mybluemix.net/conversation";
+            apiCall.setURL(url);
+            try {
+                ob = apiCall.sendRequest("hi", "1");
+                resp = ob.get("text").toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Object : " + ob);
+            System.out.println("Resp:" + resp);
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            StringBuffer a = new StringBuffer();
+            a.append("\n");
+            a.append(resp);
+            a.append("\n");
+            if (log_output2.getEditableText() == null) {
+                log_output2.append(a.toString());
+            } else {
+                log_output2.getEditableText().insert(0, a.toString());
+            }
+            speech_output.append("Task2 ");
+            System.out.println("done2");
+        }
+    }
+
+    private class ParallelTask3 extends AsyncTask<String, String, String> {
+        String resp;
+        String url;
+        JSONObject ob;
+        @Override
+        protected String doInBackground(String... params) {
+            url = "https://mono-v.mybluemix.net/conversation";
+            apiCall.setURL(url);
+            try {
+                ob = apiCall.sendRequest("hi", "1");
+                resp = ob.get("text").toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Object : " + ob);
+            System.out.println("Resp:" + resp);
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            StringBuffer a = new StringBuffer();
+            a.append("\n");
+            a.append(resp);
+            a.append("\n");
+            if (log_output3.getEditableText() == null) {
+                log_output3.append(a.toString());
+            } else {
+                log_output3.getEditableText().insert(0, a.toString());
+            }
+            speech_output.append("Task3 ");
+            System.out.println("done3");
+        }
+    }
+
+    private class ParallelTask4 extends AsyncTask<String, String, String> {
+        String resp;
+        String url;
+        JSONObject ob;
+        @Override
+        protected String doInBackground(String... params) {
+            url = "https://mono-v.mybluemix.net/conversation";
+            apiCall.setURL(url);
+            try {
+                ob = apiCall.sendRequest("hi", "1");
+                resp = ob.get("text").toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Object : " + ob);
+            System.out.println("Resp:" + resp);
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            StringBuffer a = new StringBuffer();
+            a.append("\n");
+            a.append(resp);
+            a.append("\n");
+            if (log_output4.getEditableText() == null) {
+                log_output4.append(a.toString());
+            } else {
+                log_output4.getEditableText().insert(0, a.toString());
+            }
+            speech_output.append("Task4 ");
+            System.out.println("done4");
+        }
+    }
 
 }
 
