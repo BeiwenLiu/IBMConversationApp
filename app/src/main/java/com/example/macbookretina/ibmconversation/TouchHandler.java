@@ -36,13 +36,20 @@ public class TouchHandler {
         if (category.equals("Midtown Brew")) {
             String input = entity + " " + attribute;
             try {
-                response = service.conversation(id, input, "1", "touch");
+                response = service.conversation(id, "restate", "1", "touch");
                 JSONArray tempAnswer = response.getJSONArray("actions");
                 if (tempAnswer.length() > 0) {
                     answer = tempAnswer.getJSONObject(0).get("action_type").toString();
-                } else {
-                    answer = "No Action found";
                 }
+                if (answer.equals("coffee order")) {
+                    response = service.conversation(id, "no", "1", "touch");
+                }
+                service.conversation(id, input, "1", "touch");
+                response = service.conversation(id, "no", "1", "touch");
+                JSONObject ans = response.getJSONArray("actions").getJSONObject(0).getJSONObject("order_in_progress");
+
+                answer = ans.get("coffee quantity") + " " + ans.get("coffee size") + " " + ans.get("coffee name");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
