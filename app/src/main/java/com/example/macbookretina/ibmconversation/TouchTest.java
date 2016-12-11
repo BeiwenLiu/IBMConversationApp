@@ -13,10 +13,12 @@ import android.widget.TextView;
 public class TouchTest extends AppCompatActivity {
     Button coffee,latte,espresso,tea,icetea,frappe;
     RadioGroup coffeegroup, lattegroup,espressogroup, teagroup, iceteagroup, frappegroup;
+
+    RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
     TextView view;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.console);
+        setContentView(R.layout.touchtest);
 
 
         coffee = (Button) findViewById(R.id.coffee);
@@ -33,7 +35,11 @@ public class TouchTest extends AppCompatActivity {
         iceteagroup = (RadioGroup) findViewById(R.id.iceteagroup);
         frappegroup = (RadioGroup) findViewById(R.id.frappegroup);
 
-        view = (TextView) findViewById(R.id.view);
+        icecreamgroup = (RadioGroup) findViewById(R.id.icecreamgroup);
+        friesgroup = (RadioGroup) findViewById(R.id.friesgroup);
+        softdrinkgroup = (RadioGroup) findViewById(R.id.softdrinkgroup);
+
+        view = (TextView) findViewById(R.id.brewView);
 
         coffee.setOnClickListener(new View.OnClickListener() {
             @Override

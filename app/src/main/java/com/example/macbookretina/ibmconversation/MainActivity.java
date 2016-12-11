@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> logEmail = new ArrayList();
     StringBuffer universalString = new StringBuffer();
     Map<String, String> recentLog;
-    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email,touch;
     static Button recordButton;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
@@ -253,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
         newActivity = (ToggleButton) findViewById(R.id.newActivity);
         recordButton = (Button) findViewById(R.id.startRecord);
 
+        touch = (Button) findViewById(R.id.touch);
+
         confirmed = true;
 
         recentLog = new HashMap();
@@ -282,6 +284,14 @@ public class MainActivity extends AppCompatActivity {
 //                new ParallelTask4().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 //            }
 //        });
+
+        touch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TouchTest.class);
+                startActivityForResult(intent, 0);
+            }
+        });
 
 
         newActivity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
