@@ -5,7 +5,7 @@
     android:weightSum="1">
 
     <TextView
-        android:layout_width="500dp"
+        android:layout_width="512dp"
         android:layout_height="61dp"
         android:gravity="center"
         android:text="Midtown Brew"
@@ -14,7 +14,7 @@
         android:id="@+id/textView12" />
 
     <TextView
-        android:layout_width="500dp"
+        android:layout_width="512dp"
         android:layout_height="250dp"
         android:text="New Text"
         android:id="@+id/brewView"
@@ -22,7 +22,7 @@
         android:layout_alignParentStart="true" />
 
     <GridLayout
-        android:layout_width="389dp"
+        android:layout_width="512dp"
         android:layout_height="match_parent"
         android:id="@+id/grid"
         android:rowCount="6"
@@ -30,7 +30,8 @@
         android:orientation="vertical"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/gridLayout"
-        android:layout_below="@+id/brewView">
+        android:layout_below="@+id/brewView"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:layout_width="wrap_content"
@@ -314,8 +315,8 @@
         android:text="New Text"
         android:id="@+id/cafeView"
         android:layout_below="@+id/textView13"
-        android:layout_toEndOf="@+id/brewView"
-        android:layout_above="@+id/grid" />
+        android:layout_above="@+id/grid"
+        android:layout_alignEnd="@+id/textView13" />
 
     <GridLayout
         android:layout_width="389dp"
@@ -326,7 +327,8 @@
         android:orientation="vertical"
         android:layout_below="@+id/brewView"
         android:layout_alignEnd="@+id/cafeView"
-        android:layout_toEndOf="@+id/brewView">
+        android:layout_toEndOf="@+id/brewView"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:layout_width="wrap_content"

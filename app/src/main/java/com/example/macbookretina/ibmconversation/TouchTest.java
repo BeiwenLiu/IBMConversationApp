@@ -7,15 +7,19 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 /**
  * Created by MacbookRetina on 12/10/16.
  */
 public class TouchTest extends AppCompatActivity {
-    Button coffee,latte,espresso,tea,icetea,frappe;
+    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink;
     RadioGroup coffeegroup, lattegroup,espressogroup, teagroup, iceteagroup, frappegroup;
 
     RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
     TextView view;
+
+    HashMap<String, String> map;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.touchtest);
@@ -39,12 +43,100 @@ public class TouchTest extends AppCompatActivity {
         friesgroup = (RadioGroup) findViewById(R.id.friesgroup);
         softdrinkgroup = (RadioGroup) findViewById(R.id.softdrinkgroup);
 
+        fries = (Button) findViewById(R.id.fries);
+        hamburger = (Button) findViewById(R.id.hamburger);
+        chickennuggets = (Button) findViewById(R.id.chickennuggets);
+        cookies = (Button) findViewById(R.id.cookies);
+        icecream = (Button) findViewById(R.id.icecream);
+        softdrink = (Button) findViewById(R.id.softdrink);
+
+
         view = (TextView) findViewById(R.id.brewView);
+
+        map = new HashMap();
+
 
         coffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("hey");
+                System.out.println(coffee.getText().toString());
+            }
+        });
+
+        latte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(latte.getText().toString());
+            }
+        });
+
+        espresso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(espresso.getText().toString());
+            }
+        });
+
+        tea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(tea.getText().toString());
+            }
+        });
+
+        icetea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(icetea.getText().toString());
+            }
+        });
+
+        frappe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(frappe.getText().toString());
+            }
+        });
+
+        icecream.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(icecream.getText().toString());
+            }
+        });
+
+        cookies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(cookies.getText().toString());
+            }
+        });
+
+        fries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(fries.getText().toString());
+            }
+        });
+
+        hamburger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(hamburger.getText().toString());
+            }
+        });
+
+        chickennuggets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(chickennuggets.getText().toString());
+            }
+        });
+
+        softdrink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(softdrink.getText().toString());
             }
         });
 
