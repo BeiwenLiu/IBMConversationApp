@@ -1,5 +1,6 @@
 package com.example.macbookretina.ibmconversation;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -36,7 +37,12 @@ public class TouchHandler {
             String input = entity + " " + attribute;
             try {
                 response = service.conversation(id, input, "1", "touch");
-                answer = response.getJSONArray("actions").getJSONObject(0).get("action_type").toString();
+                JSONArray tempAnswer = response.getJSONArray("actions");
+                if (tempAnswer.length() > 0) {
+                    answer = tempAnswer.getJSONObject(0).get("action_type").toString();
+                } else {
+                    answer = "No Action found";
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

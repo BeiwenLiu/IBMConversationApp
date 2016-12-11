@@ -155,7 +155,7 @@ public class TouchTest extends AppCompatActivity {
         String resp;
         @Override
         protected String doInBackground(String... params) {
-            resp = watson.handleCommand("Midtown Brew", "Hello", "Whats");
+            resp = watson.handleCommand(params[0], params[1], params[2]);
             return null;
         };
 
