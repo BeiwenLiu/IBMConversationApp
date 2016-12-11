@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -63,7 +64,11 @@ public class TouchTest extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Handle handler = new Handle();
-                handler.execute();
+                int selectedId = coffeegroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", coffee.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
@@ -147,15 +152,16 @@ public class TouchTest extends AppCompatActivity {
     }
 
     private class Handle extends AsyncTask<String, String, String> {
+        String resp;
         @Override
         protected String doInBackground(String... params) {
-            watson.handleCommand("Midtown Brew", "Hello", "Whats");
+            resp = watson.handleCommand("Midtown Brew", "Hello", "Whats");
             return null;
         };
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println("Done");
+            view.setText(resp);
         }
     }
 }

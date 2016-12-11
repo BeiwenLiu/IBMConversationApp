@@ -51,7 +51,7 @@ public class WatsonService {
                 sb.append(line + "\n");
             }
             br.close();
-            System.out.println("" + sb.toString());
+            //System.out.println("" + sb.toString());
             out = new JSONObject(sb.toString());
         } else {
             System.out.println(connection.getResponseMessage());

@@ -35,15 +35,14 @@ public class TouchHandler {
         if (category.equals("Midtown Brew")) {
             String input = entity + " " + attribute;
             try {
-                response = service.conversation(id, "Restate", "1", "touch");
+                response = service.conversation(id, input, "1", "touch");
                 answer = response.getJSONArray("actions").getJSONObject(0).get("action_type").toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        System.out.println("-------" + answer);
-        return "a";
+        return answer;
     }
 
 }
