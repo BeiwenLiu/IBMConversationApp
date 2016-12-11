@@ -23,7 +23,7 @@ import java.net.URL;
 
 public class WatsonService {
 
-    public JSONObject conversation(String demoID, String input, String seatNumber) throws IOException, JSONException
+    public JSONObject conversation(String demoID, String input, String seatNumber, String modality) throws IOException, JSONException
     {
         System.setProperty("http.keepAlive", "false");
         URL url = new URL("https://mono-v.mybluemix.net/conversation");
@@ -37,6 +37,7 @@ public class WatsonService {
         cred.put("text", input);
         cred.put("seat", Integer.parseInt(seatNumber));
         cred.put("demo_id", demoID);
+        //cred.put("modality", modality);
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
         wr.close();
@@ -55,7 +56,7 @@ public class WatsonService {
         } else {
             System.out.println(connection.getResponseMessage());
         }
-        System.out.println(out);
+        //System.out.println(out);
         connection.disconnect();
         wr.close();
         return out;

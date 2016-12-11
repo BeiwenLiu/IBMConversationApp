@@ -1,5 +1,6 @@
 package com.example.macbookretina.ibmconversation;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,7 +19,7 @@ public class TouchTest extends AppCompatActivity {
 
     RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
     TextView view;
-
+    TouchHandler watson;
     HashMap<String, String> map;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +56,14 @@ public class TouchTest extends AppCompatActivity {
 
         map = new HashMap();
 
+        watson = new TouchHandler();
+
 
         coffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(coffee.getText().toString());
+                Handle handler = new Handle();
+                handler.execute();
             }
         });
 
@@ -140,5 +144,18 @@ public class TouchTest extends AppCompatActivity {
             }
         });
 
+    }
+
+    private class Handle extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            watson.handleCommand("Midtown Brew", "Hello", "Whats");
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println("Done");
+        }
     }
 }
