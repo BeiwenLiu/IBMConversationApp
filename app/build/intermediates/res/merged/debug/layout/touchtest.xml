@@ -16,7 +16,6 @@
     <TextView
         android:layout_width="512dp"
         android:layout_height="250dp"
-        android:text="New Text"
         android:id="@+id/brewView"
         android:layout_below="@+id/textView12"
         android:layout_alignParentStart="true" />
@@ -25,7 +24,7 @@
         android:layout_width="512dp"
         android:layout_height="match_parent"
         android:id="@+id/grid"
-        android:rowCount="6"
+        android:rowCount="9"
         android:columnCount="5"
         android:orientation="vertical"
         android:layout_alignParentStart="true"
@@ -296,6 +295,14 @@
                 android:layout_column="3"
                 android:checked="false" />
         </RadioGroup>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:id="@+id/brewConfirm"
+            android:layout_row="8"
+            android:layout_column="4" />
     </GridLayout>
 
     <TextView
@@ -312,7 +319,6 @@
     <TextView
         android:layout_width="500dp"
         android:layout_height="88dp"
-        android:text="New Text"
         android:id="@+id/cafeView"
         android:layout_below="@+id/textView13"
         android:layout_above="@+id/grid"
@@ -322,7 +328,7 @@
         android:layout_width="389dp"
         android:layout_height="match_parent"
         android:id="@+id/gridLayout"
-        android:rowCount="6"
+        android:rowCount="8"
         android:columnCount="5"
         android:orientation="vertical"
         android:layout_below="@+id/brewView"
@@ -485,6 +491,14 @@
                 android:layout_column="3"
                 android:checked="false" />
         </RadioGroup>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:id="@+id/cafeconfirm"
+            android:layout_row="7"
+            android:layout_column="4" />
 
     </GridLayout>
 

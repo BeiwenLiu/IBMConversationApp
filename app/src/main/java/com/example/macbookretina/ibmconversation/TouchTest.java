@@ -15,13 +15,15 @@ import java.util.HashMap;
  * Created by MacbookRetina on 12/10/16.
  */
 public class TouchTest extends AppCompatActivity {
-    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink;
+    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink, brewConfirm, cafeConfirm;
     RadioGroup coffeegroup, lattegroup,espressogroup, teagroup, iceteagroup, frappegroup;
 
     RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
-    TextView view;
+    TextView brewview, cafeview;
     TouchHandler watson;
     HashMap<String, String> map;
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.touchtest);
@@ -53,7 +55,11 @@ public class TouchTest extends AppCompatActivity {
         softdrink = (Button) findViewById(R.id.softdrink);
 
 
-        view = (TextView) findViewById(R.id.brewView);
+        brewview = (TextView) findViewById(R.id.brewView);
+        cafeview = (TextView) findViewById(R.id.cafeView);
+
+        brewConfirm = (Button) findViewById(R.id.brewConfirm);
+        cafeConfirm = (Button) findViewById(R.id.cafeconfirm);
 
         map = new HashMap();
 
@@ -75,77 +81,135 @@ public class TouchTest extends AppCompatActivity {
         latte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(latte.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = lattegroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", latte.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         espresso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(espresso.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = espressogroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", espresso.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         tea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(tea.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = teagroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", tea.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         icetea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(icetea.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = iceteagroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", icetea.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         frappe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(frappe.getText().toString());
-            }
+                Handle handler = new Handle();
+                int selectedId = frappegroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Brew", frappe.getText().toString(),temp.getText().toString());
+                System.out.println(temp.getText().toString());            }
         });
 
         icecream.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(icecream.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = icecreamgroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Cafe", icecream.getText().toString(), temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         cookies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(cookies.getText().toString());
+                Handle handler = new Handle();
+                handler.execute("Midtown Cafe", cookies.getText().toString(), "");
             }
         });
 
         fries.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(fries.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = friesgroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Cafe", fries.getText().toString(), temp.getText().toString());
+                System.out.println(temp.getText().toString());
             }
         });
 
         hamburger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(hamburger.getText().toString());
+                Handle handler = new Handle();
+                handler.execute("Midtown Cafe", hamburger.getText().toString(), "");
             }
         });
 
         chickennuggets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(chickennuggets.getText().toString());
+                Handle handler = new Handle();
+                handler.execute("Midtown Cafe", chickennuggets.getText().toString(), "");
             }
         });
 
         softdrink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(softdrink.getText().toString());
+                Handle handler = new Handle();
+                int selectedId = softdrinkgroup.getCheckedRadioButtonId();
+
+                RadioButton temp = (RadioButton) findViewById(selectedId);
+                handler.execute("Midtown Cafe", softdrink.getText().toString(), temp.getText().toString());
+                System.out.println(temp.getText().toString());
+            }
+        });
+
+        brewConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Handle handler = new Handle();
+                handler.execute("", brewConfirm.getText().toString(),"");
+            }
+        });
+
+        cafeConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Handle handler = new Handle();
+                handler.execute("", cafeConfirm.getText().toString(), "");
             }
         });
 
@@ -153,15 +217,27 @@ public class TouchTest extends AppCompatActivity {
 
     private class Handle extends AsyncTask<String, String, String> {
         String resp;
+        String whichView;
+        String cafe;
         @Override
         protected String doInBackground(String... params) {
             resp = watson.handleCommand(params[0], params[1], params[2]);
+            whichView = params[0];
+            if (whichView.equals("Midtown Cafe")) {
+                cafe = params[2] + " " + params[1];
+            }
             return null;
         };
 
         @Override
         protected void onPostExecute(String result) {
-            view.setText(resp);
+            if (whichView.equals("Midtown Brew")) {
+                brewview.append(resp);
+                brewview.append("\n");
+            } else if (whichView.equals("Midtown Cafe")) {
+                cafeview.append(cafe);
+                cafeview.append("\n");
+            }
         }
     }
 }

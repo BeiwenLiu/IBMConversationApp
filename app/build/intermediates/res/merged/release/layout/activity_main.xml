@@ -434,6 +434,14 @@
         android:backgroundTint="#ff00796b"
         android:textColor="#ffffff"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Touch"
+        android:id="@+id/touch"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
 

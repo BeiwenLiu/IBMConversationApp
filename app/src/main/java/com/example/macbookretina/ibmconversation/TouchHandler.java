@@ -53,9 +53,34 @@ public class TouchHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (category.equals("Midtown Cafe")) {
+            String input = entity + " " + attribute;
+            try {
+                response = service.conversation(id, "restate", "1", "touch");
+                JSONArray tempAnswer = response.getJSONArray("actions");
+                if (tempAnswer.length() > 0) {
+                    answer = tempAnswer.getJSONObject(0).get("action_type").toString();
+                }
+                if (answer.equals("food order")) {
+                    response = service.conversation(id, "no", "1", "touch");
+                }
+                service.conversation(id, input, "1", "touch");
+                answer = "Complete";
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                response = service.conversation(id, entity, "1", "touch");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return answer;
     }
+
+
 
 }
