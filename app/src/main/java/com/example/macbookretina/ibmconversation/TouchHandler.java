@@ -49,7 +49,7 @@ public class TouchHandler {
                 JSONObject ans = response.getJSONArray("actions").getJSONObject(0).getJSONObject("order_in_progress");
 
                 answer = ans.get("coffee quantity") + " " + ans.get("coffee size") + " " + ans.get("coffee name");
-
+                //answer = ans.get("text").toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,8 +64,8 @@ public class TouchHandler {
                 if (answer.equals("food order")) {
                     response = service.conversation(id, "no", "1", "touch");
                 }
-                service.conversation(id, input, "1", "touch");
-                answer = "Complete";
+                JSONObject tempOb = service.conversation(id, input, "1", "touch");
+                answer = tempOb.get("text").toString();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -73,6 +73,7 @@ public class TouchHandler {
         } else {
             try {
                 response = service.conversation(id, entity, "1", "touch");
+                answer = response.get("text").toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }

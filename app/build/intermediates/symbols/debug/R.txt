@@ -472,7 +472,7 @@ int id action_menu_presenter 0x7f0d0003
 int id action_mode_bar 0x7f0d003e
 int id action_mode_bar_stub 0x7f0d003d
 int id action_mode_close_button 0x7f0d0023
-int id action_settings 0x7f0d00c2
+int id action_settings 0x7f0d00c5
 int id activity_chooser_view_content 0x7f0d0024
 int id alertTitle 0x7f0d0030
 int id always 0x7f0d001c
@@ -543,6 +543,7 @@ int id never 0x7f0d001f
 int id newActivity 0x7f0d0075
 int id none 0x7f0d000e
 int id normal 0x7f0d000a
+int id overallView 0x7f0d00c4
 int id parentPanel 0x7f0d002d
 int id pitch 0x7f0d006d
 int id progress_circular 0x7f0d0005
@@ -645,6 +646,8 @@ int id tts 0x7f0d006b
 int id ttsGoogle 0x7f0d006a
 int id up 0x7f0d0008
 int id useLogo 0x7f0d0012
+int id watsonButton 0x7f0d00c3
+int id watsonView 0x7f0d00c2
 int id withText 0x7f0d0020
 int id wrap_content 0x7f0d0013
 int integer abc_config_activityDefaultDur 0x7f0b0001

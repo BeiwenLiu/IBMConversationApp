@@ -1,27 +1,40 @@
 package com.example.macbookretina.ibmconversation;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by MacbookRetina on 12/10/16.
  */
 public class TouchTest extends AppCompatActivity {
-    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink, brewConfirm, cafeConfirm;
+    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink, brewConfirm, cafeConfirm,watsonButton;
     RadioGroup coffeegroup, lattegroup,espressogroup, teagroup, iceteagroup, frappegroup;
 
     RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
-    TextView brewview, cafeview;
+    TextView brewview, cafeview,watsonView,overallView;
     TouchHandler watson;
     HashMap<String, String> map;
+
+    WatsonService watsonService;
+    public final int SPEECH_REQUEST_CODE = 123;
+    String id = "00b866d89308247b213eb6ea90766acb";
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -57,13 +70,18 @@ public class TouchTest extends AppCompatActivity {
 
         brewview = (TextView) findViewById(R.id.brewView);
         cafeview = (TextView) findViewById(R.id.cafeView);
-
+        watsonView = (TextView) findViewById(R.id.watsonView);
+        overallView = (TextView) findViewById(R.id.overallView);
         brewConfirm = (Button) findViewById(R.id.brewConfirm);
         cafeConfirm = (Button) findViewById(R.id.cafeconfirm);
 
+        watsonButton = (Button) findViewById(R.id.watsonButton);
+
+        final Context context = this;
         map = new HashMap();
 
         watson = new TouchHandler();
+        watsonService = new WatsonService();
 
 
         coffee.setOnClickListener(new View.OnClickListener() {
@@ -201,7 +219,7 @@ public class TouchTest extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Handle handler = new Handle();
-                handler.execute("", brewConfirm.getText().toString(),"");
+                handler.execute("", brewConfirm.getText().toString(), "");
             }
         });
 
@@ -213,18 +231,30 @@ public class TouchTest extends AppCompatActivity {
             }
         });
 
+        watsonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                GoogleSTT a = new GoogleSTT(context);
+                a.showGoogleInputDialog();
+            }
+        });
+
     }
 
     private class Handle extends AsyncTask<String, String, String> {
         String resp;
         String whichView;
         String cafe;
+        String brew;
         @Override
         protected String doInBackground(String... params) {
             resp = watson.handleCommand(params[0], params[1], params[2]);
             whichView = params[0];
             if (whichView.equals("Midtown Cafe")) {
                 cafe = params[2] + " " + params[1];
+            } else if (whichView.equals("Midtown Brew")) {
+                brew = params[2] + " " + params[1];
             }
             return null;
         };
@@ -232,12 +262,74 @@ public class TouchTest extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (whichView.equals("Midtown Brew")) {
-                brewview.append(resp);
+                brewview.append(brew);
                 brewview.append("\n");
             } else if (whichView.equals("Midtown Cafe")) {
                 cafeview.append(cafe);
                 cafeview.append("\n");
             }
+
+            overallView.append(resp);
+            overallView.append("\n");
+
+        }
+    }
+
+    private class Watson extends AsyncTask<String, String, String> {
+        String resp;
+        String whichView;
+        String cafe;
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                JSONObject temp = watsonService.conversation(id, params[0], "1", "Speech");
+                resp = temp.get("text").toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        };
+
+        @Override
+        protected void onPostExecute(String result) {
+            watsonView.setText(resp);
+            overallView.append(resp);
+            overallView.append("\n");
+        }
+    }
+
+    public void showGoogleInputDialog() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                "Voice recognition Demo...");
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(10000));
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "Your device is not supported!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case SPEECH_REQUEST_CODE: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    Watson handler = new Watson();
+                    handler.execute(result.get(0));
+                }
+                break;
+            }
+
         }
     }
 }

@@ -37,7 +37,7 @@ public class WatsonService {
         cred.put("text", input);
         cred.put("seat", Integer.parseInt(seatNumber));
         cred.put("demo_id", demoID);
-        //cred.put("modality", modality);
+        cred.put("modality", modality);
         OutputStreamWriter wr= new OutputStreamWriter(connection.getOutputStream());
         wr.write(cred.toString());
         wr.close();

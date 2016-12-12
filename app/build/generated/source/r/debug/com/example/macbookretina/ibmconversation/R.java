@@ -1635,7 +1635,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f0d003e;
         public static final int action_mode_bar_stub=0x7f0d003d;
         public static final int action_mode_close_button=0x7f0d0023;
-        public static final int action_settings=0x7f0d00c2;
+        public static final int action_settings=0x7f0d00c5;
         public static final int activity_chooser_view_content=0x7f0d0024;
         public static final int alertTitle=0x7f0d0030;
         public static final int always=0x7f0d001c;
@@ -1706,6 +1706,7 @@ containing a value of this type.
         public static final int newActivity=0x7f0d0075;
         public static final int none=0x7f0d000e;
         public static final int normal=0x7f0d000a;
+        public static final int overallView=0x7f0d00c4;
         public static final int parentPanel=0x7f0d002d;
         public static final int pitch=0x7f0d006d;
         public static final int progress_circular=0x7f0d0005;
@@ -1808,6 +1809,8 @@ containing a value of this type.
         public static final int ttsGoogle=0x7f0d006a;
         public static final int up=0x7f0d0008;
         public static final int useLogo=0x7f0d0012;
+        public static final int watsonButton=0x7f0d00c3;
+        public static final int watsonView=0x7f0d00c2;
         public static final int withText=0x7f0d0020;
         public static final int wrap_content=0x7f0d0013;
     }

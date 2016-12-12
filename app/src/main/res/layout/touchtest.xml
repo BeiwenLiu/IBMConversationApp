@@ -502,4 +502,41 @@
 
     </GridLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/watsonView"
+        android:layout_below="@+id/textView13"
+        android:layout_above="@+id/gridLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textView13" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/watsonButton"
+        android:layout_below="@+id/cafeView"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/cafeView" />
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/watsonButton"
+    android:layout_alignStart="@+id/watsonButton"
+    android:layout_alignBottom="@+id/gridLayout"
+    android:layout_alignParentEnd="true">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/overallView"
+        android:layout_below="@+id/watsonButton"
+        android:layout_alignStart="@+id/watsonButton"
+        android:layout_alignBottom="@+id/gridLayout"
+        android:layout_alignParentEnd="true" />
+
+</ScrollView>
+
 </RelativeLayout>
