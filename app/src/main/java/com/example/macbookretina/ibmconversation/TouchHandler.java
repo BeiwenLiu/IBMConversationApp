@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by MacbookRetina on 12/11/16.
@@ -37,15 +38,23 @@ public class TouchHandler {
             String input = entity + " " + attribute;
             try {
                 response = service.conversation(id, "restate", "1", "touch");
+                System.out.println(response);
                 JSONArray tempAnswer = response.getJSONArray("actions");
                 if (tempAnswer.length() > 0) {
                     answer = tempAnswer.getJSONObject(0).get("action_type").toString();
                 }
                 if (answer.equals("coffee order")) {
                     response = service.conversation(id, "no", "1", "touch");
+                    System.out.println(response);
+                }
+                try {
+                    Thread.sleep(400);
+                } catch(InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
                 service.conversation(id, input, "1", "touch");
                 response = service.conversation(id, "no", "1", "touch");
+                System.out.println(response);
                 JSONObject ans = response.getJSONArray("actions").getJSONObject(0).getJSONObject("order_in_progress");
 
                 answer = ans.get("coffee quantity") + " " + ans.get("coffee size") + " " + ans.get("coffee name");
@@ -63,6 +72,11 @@ public class TouchHandler {
                 }
                 if (answer.equals("food order")) {
                     response = service.conversation(id, "no", "1", "touch");
+                }
+                try {
+                    Thread.sleep(200);
+                } catch(InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
                 JSONObject tempOb = service.conversation(id, input, "1", "touch");
                 answer = tempOb.get("text").toString();
