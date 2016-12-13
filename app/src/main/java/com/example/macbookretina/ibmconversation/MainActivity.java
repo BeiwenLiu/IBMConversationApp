@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
     boolean liked;
     boolean multiThreadCheck; //If enabled, will send request across all seats
 
+    final Context context = this;
+
 
 
     @Override
@@ -288,8 +290,12 @@ public class MainActivity extends AppCompatActivity {
         touch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TouchTest.class);
-                startActivityForResult(intent, 0);
+                //Intent intent = new Intent(v.getContext(), TouchTest.class);
+                //startActivityForResult(intent, 0);
+
+                GoogleTTS n = new GoogleTTS(context);
+                String path = n.sendTTS("How are you");
+                //System.out.println(path);
             }
         });
 
