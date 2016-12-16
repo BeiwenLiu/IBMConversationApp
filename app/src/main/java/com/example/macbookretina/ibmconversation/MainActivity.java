@@ -293,8 +293,8 @@ public class MainActivity extends AppCompatActivity {
                 //Intent intent = new Intent(v.getContext(), TouchTest.class);
                 //startActivityForResult(intent, 0);
 
-                GoogleTTS n = new GoogleTTS(context);
-                String path = n.sendTTS("How are you");
+                GoogleTts n = new GoogleTts(context,"/sdcard/tts.wav");
+                String path = n.sendTts("testing");
                 //System.out.println(path);
             }
         });

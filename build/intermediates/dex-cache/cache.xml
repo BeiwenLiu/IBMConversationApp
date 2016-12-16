@@ -1,2 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.2.1/support-annotations-23.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="ccb693bc0774fcb637246f7360de25b4af7df318">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.2.1_1ba2a333118dabbfb61404b4a79650552071a219/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-urlconnection/3.3.1/14e70f2069fb98dc60346dd24cb7b6a2e321580d/okhttp-urlconnection-3.3.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="14e70f2069fb98dc60346dd24cb7b6a2e321580d">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-urlconnection-3.3.1_22568d96d23fa855744680eec4fd202f8b3138d0/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/retrieve-and-rank/3.4.0/1dfe2da9d38543062700bb2686ba99ab9ce4afbd/retrieve-and-rank-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="1dfe2da9d38543062700bb2686ba99ab9ce4afbd">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/retrieve-and-rank-3.4.0_a2923cc4048662d65595f0a81a41fb7e617cfda8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="e4d0cbb0b999604b349062f0214a0a228a7fd151">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.2.1_fb564fe471294e5f943bceb2157f86ed81904ed4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/text-to-speech/3.4.0/7b07efa85a9e7b24d27615c58a0995c71527aad9/text-to-speech-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="7b07efa85a9e7b24d27615c58a0995c71527aad9">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/text-to-speech-3.4.0_05b95171189bdd8fada27c29f221a49ceed5b58a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="e5be5e3a2bfe1d5e58d7e819bb3186ca7884e9a0">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_aaa9289703223d33de645752b4871fb52f84e695/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/natural-language-classifier/3.4.0/21c8c9a8c375cf247a0d4f840214a10a2b147601/natural-language-classifier-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="21c8c9a8c375cf247a0d4f840214a10a2b147601">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/natural-language-classifier-3.4.0_ec8e58aadac5ac52432a9dbd1aba38598731f047/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.ibm.watson.developer_cloud/android-sdk/0.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="73cffbb6af0ac972a6290c7260d6d528831842bd">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.ibm.watson.developer_cloud-android-sdk-0.1.0_93115f8e83cbbaf42c0938c2c440fb1a11c4fcc4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="3469cb457f10f74c28cbc05f069b6c894f6cbdd0">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.2.1_0d8164015d9e193e7d90d0fd23299dd10edca75f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/visual-recognition/3.4.0/3ee8c92b1b5465a3ddd14073249ca0db11575220/visual-recognition-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="3ee8c92b1b5465a3ddd14073249ca0db11575220">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/visual-recognition-3.4.0_e0212f43e4ec913f159af19badb57d62e1ada32a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/tone-analyzer/3.4.0/c898379a278034bbbd522fbce93987b47c030e2b/tone-analyzer-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="c898379a278034bbbd522fbce93987b47c030e2b">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/tone-analyzer-3.4.0_825aa86c86fb085dfd0d58c486efa4a6e3dda189/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/core/3.4.0/e4cad22bd98e9ef8bba28d1f8b564369bacc32e6/core-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="e4cad22bd98e9ef8bba28d1f8b564369bacc32e6">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/core-3.4.0_238267ead7c284e52004b9097c97a5885ca50930/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/speech-to-text/3.4.0/bb96782e7751d25cbe65162eacf6e92525121031/speech-to-text-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="bb96782e7751d25cbe65162eacf6e92525121031">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/speech-to-text-3.4.0_3c671c7539f17f635a3c751fb74ee59881392df5/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/dialog/3.4.0/a5feeb88637bbd30cd33df150dde0c74f103c352/dialog-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="a5feeb88637bbd30cd33df150dde0c74f103c352">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/dialog-3.4.0_c1b9937646a76653bddf6aabfc7527ddc144974b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.google.code.gson/gson/2.6.2/f1bc476cc167b18e66c297df599b2377131a8947/gson-2.6.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="f1bc476cc167b18e66c297df599b2377131a8947">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.6.2_ca835139ff71bda0641b2cccc24a70ee5b8212f1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/libs/internal_impl-23.2.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="607a3d0b8013b4ccbfeb0b7cb293351994e021fb">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.2.1_74e929801079af861f00f11970c962193f403bfb/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.squareup.okio/okio/1.8.0/5ea7af56cc7c567ed9856d99efb30740e9b17ff/okio-1.8.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.8.0_689480ccd2d7008b6979d4bfeebd6730a8c53609/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/document-conversion/3.4.0/a0e9408bd69231a47242e15f7aff6fe17973f5de/document-conversion-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="a0e9408bd69231a47242e15f7aff6fe17973f5de">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/document-conversion-3.4.0_72636d02c3e09e4660648e8d3a54207a17644ca5/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="3be474b1b21b31cf2fa93fe6bd641ae108d96452">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.2.1_89e3f3055cf8c77af9fa157523690ad88cee0601/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/personality-insights/3.4.0/7060f06e097418de59ecf8facaeb674c62f59c90/personality-insights-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="7060f06e097418de59ecf8facaeb674c62f59c90">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/personality-insights-3.4.0_c0041f505c8a99e52029d275b53c7bb12a46090c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.squareup.okhttp3/logging-interceptor/3.3.1/99ce730034c6f5aaed710d1e0e9df95e8714ed5f/logging-interceptor-3.3.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="99ce730034c6f5aaed710d1e0e9df95e8714ed5f">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/logging-interceptor-3.3.1_85ae4c810d2047dadd3e12048e9fe213ebf2560f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-ws/3.3.1/ebca9fdfbef870042a19aec6a5b7a21d72639310/okhttp-ws-3.3.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="ebca9fdfbef870042a19aec6a5b7a21d72639310">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-ws-3.3.1_b2562ec5254a67ced9cf9fe98fd6c1a7d5931115/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/tradeoff-analytics/3.4.0/563526cf7d5e9edd60ca1be5a4e76a185bb0685c/tradeoff-analytics-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="563526cf7d5e9edd60ca1be5a4e76a185bb0685c">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/tradeoff-analytics-3.4.0_3c8d7fb818cd6f2decdd347bbad71f51d898b6ea/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/language-translation/3.4.0/f3e9d54f4bb3e67cfd1bbd855127d00ab4a5981f/language-translation-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="f3e9d54f4bb3e67cfd1bbd855127d00ab4a5981f">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/language-translation-3.4.0_6fbd15822957d98ad8131d1756c184b7b615e1d8/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="673d77a5bbddd766037f088e775df525c46407f0">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.2.1_aecbb2685377c7c8ea3f1fd5891827ee6d94377e/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/conversation/3.4.0/887a306f535bfb557908afe3dc3f88bf5578f71b/conversation-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="887a306f535bfb557908afe3dc3f88bf5578f71b">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/conversation-3.4.0_73bcac443fda8240f2218f5df4442eab08edce54/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.ibm.watson.developer_cloud/alchemy/3.4.0/cb9b7dfc235b1765f8dc5cb69049fb80c50faefe/alchemy-3.4.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="cb9b7dfc235b1765f8dc5cb69049fb80c50faefe">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/alchemy-3.4.0_1d0982a413ae9455e46958507fb46d0da8ee76ff/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="8268a65dc1ae0fd9d47f7e32cf56b6cbbec18e52">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_44fb6e78bd44789b36b08a5cc2841f0dc2c1def6/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/org.glassfish.jersey.bundles.repackaged/jersey-jsr166e/2.22.2/3ef9c67a5bea4d914a45bd54f3405fa29a368f7a/jersey-jsr166e-2.22.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="3ef9c67a5bea4d914a45bd54f3405fa29a368f7a">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/jersey-jsr166e-2.22.2_32feb27b7859dbdc49b37a001814f548afe37046/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.3.1/19047bdb6a4fc00a44124f64ca98e88fc204e7e3/okhttp-3.3.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="19047bdb6a4fc00a44124f64ca98e88fc204e7e3">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-3.3.1_d943ab8b4a87324a3ada665f851f82fb64f75958/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/usr/local/opt/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient-android/4.3.5.1/eecbb0b998e77629862a13d957d552b3be58fc4e/httpclient-android-4.3.5.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.0"
+        sha1="eecbb0b998e77629862a13d957d552b3be58fc4e">
+        <dex dex="/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/transforms/dex/debug/folders/1000/10/httpclient-android-4.3.5.1_3fab118fe699be56ac4cc296eeb2cacfd134dbbd/classes.dex" />
+    </item>
+
+</items>

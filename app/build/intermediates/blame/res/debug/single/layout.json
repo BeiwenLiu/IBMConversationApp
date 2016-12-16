@@ -72,16 +72,16 @@
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/abc_alert_dialog_material.xml"
     },
     {
+        "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/touchtest.xml",
+        "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/src/main/res/layout/touchtest.xml"
+    },
+    {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/notification_media_action.xml",
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/notification_media_action.xml"
     },
     {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/abc_action_menu_item_layout.xml",
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/abc_action_menu_item_layout.xml"
-    },
-    {
-        "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/touchtest.xml",
-        "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/src/main/res/layout/touchtest.xml"
     },
     {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
