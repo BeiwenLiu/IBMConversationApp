@@ -20,12 +20,12 @@
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/drawable/abc_list_selector_background_transition_holo_dark.xml"
     },
     {
-        "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/drawable/abc_tab_indicator_material.xml",
-        "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/drawable/abc_tab_indicator_material.xml"
-    },
-    {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/drawable/abc_ratingbar_indicator_material.xml",
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/drawable/abc_ratingbar_indicator_material.xml"
+    },
+    {
+        "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/drawable/abc_tab_indicator_material.xml",
+        "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/drawable/abc_tab_indicator_material.xml"
     },
     {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/drawable/abc_ratingbar_small_material.xml",

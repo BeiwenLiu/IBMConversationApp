@@ -442,6 +442,14 @@
         android:layout_below="@+id/radioGroup"
         android:layout_alignParentStart="true" />
 
+    <Button
+        android:text="GoogleTts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/touch"
+        android:layout_toEndOf="@+id/touch"
+        android:id="@+id/googleTtsTest" />
+
 
 </RelativeLayout>
 

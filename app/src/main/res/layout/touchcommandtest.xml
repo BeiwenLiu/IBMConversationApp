@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="555dp"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="26dp"
+        android:id="@+id/lightsOn"
+        android:text="Turn on Lights" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:id="@+id/lightsOff"
+        android:layout_below="@+id/lightsOn"
+        android:layout_alignStart="@+id/lightsOn"
+        android:text="Turn off Lights" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:id="@+id/away"
+        android:layout_below="@+id/lightsOff"
+        android:layout_alignStart="@+id/lightsOff"
+        android:text="Set Away" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="47dp"
+        android:id="@+id/play"
+        android:layout_alignBaseline="@+id/lightsOn"
+        android:layout_alignBottom="@+id/lightsOn"
+        android:layout_toEndOf="@+id/lightsOn"
+        android:text="Play" />
+
+    <EditText
+        android:layout_width="300px"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/play"
+        android:id="@+id/song"
+        android:layout_alignBottom="@+id/play" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/stop"
+        android:layout_alignBaseline="@+id/lightsOff"
+        android:layout_alignBottom="@+id/lightsOff"
+        android:layout_alignStart="@+id/play"
+        android:text="Stop" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/temperature"
+        android:layout_alignBaseline="@+id/away"
+        android:layout_alignBottom="@+id/away"
+        android:layout_alignStart="@+id/stop"
+        android:text="Set Temperature" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/temperature"
+        android:id="@+id/temp"
+        android:max="20"
+        android:progress="10"
+        android:layout_below="@+id/temperature"
+        android:layout_alignEnd="@+id/temperature" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/temp"
+        android:layout_alignStart="@+id/temp"
+        android:layout_alignEnd="@+id/temp"
+        android:id="@+id/seek"
+        android:text="70"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/unlockDoor"
+        android:layout_alignBaseline="@+id/lightsOn"
+        android:layout_alignBottom="@+id/lightsOn"
+        android:layout_toStartOf="@+id/lightsOff"
+        android:layout_marginEnd="42dp"
+        android:text="Unlock Door" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lockGarageDoor"
+        android:layout_alignBaseline="@+id/lightsOff"
+        android:layout_alignBottom="@+id/lightsOff"
+        android:layout_alignStart="@+id/unlockDoor"
+        android:text="Lock Door" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/home"
+        android:layout_alignBaseline="@+id/away"
+        android:layout_alignBottom="@+id/away"
+        android:layout_alignStart="@+id/lockGarageDoor"
+        android:text="Set Home" />
+
+    <ScrollView
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="900px"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView14"
+            android:textSize="32sp"
+            android:gravity="center_horizontal"/>
+
+    </ScrollView>
+
+</RelativeLayout>

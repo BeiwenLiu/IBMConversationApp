@@ -136,6 +136,10 @@
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/support_simple_spinner_dropdown_item.xml"
     },
     {
+        "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/touchcommandtest.xml",
+        "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/src/main/res/layout/touchcommandtest.xml"
+    },
+    {
         "merged": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/res/merged/debug/layout/abc_search_view.xml",
         "source": "/Users/MacbookRetina/Desktop/Alexa/IBMConversation/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/abc_search_view.xml"
     },

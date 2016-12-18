@@ -524,7 +524,7 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/watsonButton"
     android:layout_alignStart="@+id/watsonButton"
-    android:layout_alignBottom="@+id/gridLayout"
+    android:layout_above="@+id/button2"
     android:layout_alignParentEnd="true">
 
 
@@ -538,5 +538,13 @@
         android:layout_alignParentEnd="true" />
 
 </ScrollView>
+
+    <Button
+        android:text="OtherScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/otherScreen"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/gridLayout" />
 
 </RelativeLayout>

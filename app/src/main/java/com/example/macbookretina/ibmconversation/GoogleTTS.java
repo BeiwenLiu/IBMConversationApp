@@ -1,8 +1,10 @@
 package com.example.macbookretina.ibmconversation;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -30,9 +32,8 @@ public class GoogleTts {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     mTextToSpeech.setLanguage(Locale.US);
-                    HashMap<String, String> myHashRender = new HashMap();
-                    myHashRender.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, tempString);
-                    mTextToSpeech.synthesizeToFile(tempString, myHashRender, mFilePath);
+                    File tempFile = new File(mFilePath);
+                    mTextToSpeech.synthesizeToFile(tempString, Bundle.EMPTY, tempFile, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
                     //t1.speak(tempString, TextToSpeech.QUEUE_FLUSH, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
                 }
             }

@@ -24,7 +24,7 @@ import java.util.Locale;
  * Created by MacbookRetina on 12/10/16.
  */
 public class TouchTest extends AppCompatActivity {
-    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink, brewConfirm, cafeConfirm,watsonButton;
+    Button coffee,latte,espresso,tea,icetea,frappe,hamburger,chickennuggets,icecream,fries,cookies, softdrink, brewConfirm, cafeConfirm,watsonButton,otherScreen;
     RadioGroup coffeegroup, lattegroup,espressogroup, teagroup, iceteagroup, frappegroup;
 
     RadioGroup softdrinkgroup, friesgroup, icecreamgroup;
@@ -76,6 +76,7 @@ public class TouchTest extends AppCompatActivity {
         cafeConfirm = (Button) findViewById(R.id.cafeconfirm);
 
         watsonButton = (Button) findViewById(R.id.watsonButton);
+        otherScreen = (Button) findViewById(R.id.otherScreen);
 
         final Context context = this;
         map = new HashMap();
@@ -83,6 +84,14 @@ public class TouchTest extends AppCompatActivity {
         watson = new TouchHandler();
         watsonService = new WatsonService();
 
+
+        otherScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TouchCommandTest.class);
+                startActivityForResult(intent, 0);
+            }
+        } );
 
         coffee.setOnClickListener(new View.OnClickListener() {
             @Override

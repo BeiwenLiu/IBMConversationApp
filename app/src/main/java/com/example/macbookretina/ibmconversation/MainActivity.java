@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> logEmail = new ArrayList();
     StringBuffer universalString = new StringBuffer();
     Map<String, String> recentLog;
-    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email,touch;
+    Button sttButton,ttsButton,test,reset,sttIBM,ttsGoogle,like,dislike,log,confirm,email,touch, googleTtsTest;
     static Button recordButton;
     TextView speech_output, log_output1, log_output2, log_output3, log_output4;
     ScrollView scroll;
@@ -257,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
 
         touch = (Button) findViewById(R.id.touch);
 
+        googleTtsTest = (Button) findViewById(R.id.googleTtsTest);
+
         confirmed = true;
 
         recentLog = new HashMap();
@@ -290,12 +292,21 @@ public class MainActivity extends AppCompatActivity {
         touch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(v.getContext(), TouchTest.class);
-                //startActivityForResult(intent, 0);
+                Intent intent = new Intent(v.getContext(), TouchTest.class);
+                startActivityForResult(intent, 0);
 
-                GoogleTts n = new GoogleTts(context,"/sdcard/tts.wav");
-                String path = n.sendTts("testing");
+                //GoogleTts n = new GoogleTts(context,"/sdcard/tts.wav");
+                //String path = n.sendTts("testing");
                 //System.out.println(path);
+            }
+        });
+
+        googleTtsTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoogleTts n = new GoogleTts(context,"/sdcard/tts.wav");
+                String path = n.sendTts("testing again");
+                System.out.println(path);
             }
         });
 
@@ -981,19 +992,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        View view = getCurrentFocus();
-        if (view != null && (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) && view instanceof EditText && !view.getClass().getName().startsWith("android.webkit.")) {
-            int scrcoords[] = new int[2];
-            view.getLocationOnScreen(scrcoords);
-            float x = ev.getRawX() + view.getLeft() - scrcoords[0];
-            float y = ev.getRawY() + view.getTop() - scrcoords[1];
-            if (x < view.getLeft() || x > view.getRight() || y < view.getTop() || y > view.getBottom())
-                ((InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
 
 
     private void showMicText(final String text) {
